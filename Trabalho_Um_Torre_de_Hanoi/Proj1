@@ -10,7 +10,7 @@ public class Proj1 {
 
 	public static void main(String args[])
 	{
-		// criaÁ„o do objeto da classe Scanner, que lÍ o teclado
+		// cria√ß√£o do objeto da classe Scanner, que l√™ o teclado
 		Scanner sc = new Scanner(System.in);
 		
 		//first game layer
@@ -19,10 +19,10 @@ public class Proj1 {
 		System.out.println("*".repeat(25));
 
 		// Creating an empty Stack 
-		//Stacks vazios s„o arrays que n„o est·ticos
+		//Stacks vazios s√£o arrays que n√£o est√°ticos
 		
 		
-		//decidimos realizar este exercicio por Stacks pois para algoritmos recursivos È uma otima ferramenta
+		//decidimos realizar este exercicio por Stacks pois para algoritmos recursivos √© uma otima ferramenta
 		//Em probleams recursivos Stacks demosntram uma elevada performance
 		
 		
@@ -31,9 +31,9 @@ public class Proj1 {
 		Stack<Integer> aux3 = new Stack<Integer>();       //stack esquerda
 
 		
-		int disk = 0;//n˙mero de discos usados durante o jogo
-		int diskMin = 3;//n˙mero minimo de discos permitidos
-		int diskMax = 10;//n˙mero m·ximo de discos permitidos
+		int disk = 0;//n√∫mero de discos usados durante o jogo
+		int diskMin = 3;//n√∫mero minimo de discos permitidos
+		int diskMax = 10;//n√∫mero m√°ximo de discos permitidos
 		int counter = 0;
 		int solve = 0;
 
@@ -58,7 +58,7 @@ public class Proj1 {
 				System.out.println("Insert a number:");
 				
 			}
-			//pede-se ao usu·rio o numero de discos
+			//pede-se ao usu√°rio o numero de discos
 			
 			
 	
@@ -71,15 +71,15 @@ public class Proj1 {
 			
 		}
 		
-		solve = 2*(disk)-1;//n˙mero de tentativas minimas
+		solve = 2*(disk)-1;//n√∫mero de tentativas minimas
 		
 		//base de cada torre. 
 		aux1.push(1000);
 		aux2.push(1000);
 		aux3.push(1000);
 
-		/*Loop de introduÁ„o do n˙mero de discos definidos pelo o usuario 
-		 * Os discos s„o introduzidos por ordem descrescente no stack
+		/*Loop de introdu√ß√£o do n√∫mero de discos definidos pelo o usuario 
+		 * Os discos s√£o introduzidos por ordem descrescente no stack
 		 */
 		for (int j = disk; j >= 1; j--){
 			
@@ -184,7 +184,7 @@ public class Proj1 {
 		System.out.println("*".repeat(25));
 		System.out.println("*         Credits       *");
 		System.out.println("*".repeat(25)+"\n");
-		System.out.println(" Francisco Relv„o | 2018285965 |MIEF\n GonÁalo Gouveia  | 2018277419 |MIEF");
+		System.out.println(" Francisco Relv√£o | 2018285965 |MIEF\n Gon√ßalo Gouveia  | 2018277419 |MIEF");
 
 
 		sc.close();
@@ -195,12 +195,12 @@ public class Proj1 {
 		
 		
 		/*   
-		 * ------------------------- FORMULA«¬O MATEM¡TICA --------------------------------
+		 * ------------------------- FORMULA√á√ÇO MATEM√ÅTICA --------------------------------
 		 * 
-		 *   Considere-se a seguinte pir‚mide e a sua comparaÁ„o com uma stack:
+		 *   Considere-se a seguinte pir√¢mide e a sua compara√ß√£o com uma stack:
 		 *   
 		 *   Na vertical, o index da Stack. Na horizontal, o index da coluna a
-		 *   escrever. Um pixel È considerado um ponto desta matriz.
+		 *   escrever. Um pixel √© considerado um ponto desta matriz.
 		 *   
 		 *   index Stack
 		 *     . . . | . . .  
@@ -210,35 +210,35 @@ public class Proj1 {
 		 *	 0 0 1 2 3 4 5 6              100]
 		 *	 
 		 *
-		 * 	 O n˙mero m·ximo de pixeis por torre È definido pelo o numero de 
-		 *	 peÁas escolhidas no inicio do jogo. Isto porque a maior peÁa  
-		 *	 define este numero m·ximo de pixeis.
+		 * 	 O n√∫mero m√°ximo de pixeis por torre √© definido pelo o numero de 
+		 *	 pe√ßas escolhidas no inicio do jogo. Isto porque a maior pe√ßa  
+		 *	 define este numero m√°ximo de pixeis.
 		 * 	 
-		 *	 Logo, se L for o numero m·ximo de pixeis numa linha e uma torre, ent„o
-		 *	 L È igual a 2*disk, sendo o disk o n˙mero peÁas em jogo.
+		 *	 Logo, se L for o numero m√°ximo de pixeis numa linha e uma torre, ent√£o
+		 *	 L √© igual a 2*disk, sendo o disk o n√∫mero pe√ßas em jogo.
 		 *	 
-		 *	 … necess·rio definir o centro geomÈtrico das torres. 
-		 *	 O centro geomÈtrico È sempre halfL = disk e metade do tamanho total, L.
+		 *	 √â necess√°rio definir o centro geom√©trico das torres. 
+		 *	 O centro geom√©trico √© sempre halfL = disk e metade do tamanho total, L.
 		 *	 
-		 *	 Por fim, cada disco È desenhado com simetria em relaÁ„o ao eixo
+		 *	 Por fim, cada disco √© desenhado com simetria em rela√ß√£o ao eixo
 		 *	 da base de sustento. Logo, o pixeis com (halfL, y) fazem sempre
 		 * 	 parte do desenho de um disco. 
-		 *   A partir deste pÌxel central, pode se adicionar uma quantidade de 
+		 *   A partir deste p√≠xel central, pode se adicionar uma quantidade de 
 		 *   asteriscos para a esquerda e para a direita do pixel referido. 
 		 *   Seja W a quantidade de asteriscos a adicionar de cada lado. 
-		 *   W È uma sÈrie em funÁ„o do n˙mero de disco.
+		 *   W √© uma s√©rie em fun√ß√£o do n√∫mero de disco.
 		 *   (diskNumber - valor num determinado index da stack). 
 		 *   
 		 *   Resumindo:
-		 *   L (n˙mero de colunas) = 2*disk, disk - discos em jogo
-		 *   halfL (centro geomÈtrico de uma torre) = disk
+		 *   L (n√∫mero de colunas) = 2*disk, disk - discos em jogo
+		 *   halfL (centro geom√©trico de uma torre) = disk
 		 *   Intervalo de desenho de um disco - [halfL - diskNumber , halfL + diskNumber]
 		 *	 
 		 *-------------------------------------------------------------------------------*/
 		
-		String cursor = " "; //cursor de escrita de um pixel, inicializado com um espaÁo
+		String cursor = " "; //cursor de escrita de um pixel, inicializado com um espa√ßo
 		
-		int L = 2*disk; // n˙mero m·ximo de pixeis horizontais por torre
+		int L = 2*disk; // n√∫mero m√°ximo de pixeis horizontais por torre
 		int halfL = disk; // centro geometrico de cada torre
 		
 		int towerSize = towerOne.size(); //quantidade de discos sobrepostos numa torre
@@ -246,42 +246,42 @@ public class Proj1 {
 
 		
 		/*
-		 * O prÛximo loop funciona com se fosse um tubo de raios catÛdicos.
+		 * O pr√≥ximo loop funciona com se fosse um tubo de raios cat√≥dicos.
 		 * Primeiro escolhe uma linha da matriz apresentada, (row). 
-		 * De seguida. È chamada uma rotina de desenho, sendo que a rotina deseha prinheiro
-		 * os espaÁos vazios e os espaÁos que correspondem a um disco em coluna.
-		 * ApÛs acabar uma torre, o cursor de desenho mantem-se na mesma linha,
-		 * mas muda de coluna e torre, fazendo isto sucessivamente atÈ todas as 
+		 * De seguida. √© chamada uma rotina de desenho, sendo que a rotina deseha prinheiro
+		 * os espa√ßos vazios e os espa√ßos que correspondem a um disco em coluna.
+		 * Ap√≥s acabar uma torre, o cursor de desenho mantem-se na mesma linha,
+		 * mas muda de coluna e torre, fazendo isto sucessivamente at√© todas as 
 		 * torres estarem representadas. 
-		 * No final, a linha de desenho È fechada e o cursor de desenho passa 
+		 * No final, a linha de desenho √© fechada e o cursor de desenho passa 
 		 * a uma nova linha, (row).
-		 * A quantidade de linhas È diretamente proporcional ao n˙mero de peÁas
+		 * A quantidade de linhas √© diretamente proporcional ao n√∫mero de pe√ßas
 		 * em jogo.
 		 *
 		 */
 		
 		for (int row = disk + 1; row > 0; row--) {
 			
-			//… chamada a rotina de desenho para uma linha de cada torre
+			//√â chamada a rotina de desenho para uma linha de cada torre
 			drawRoutine(cursor, row, L, disk, towerOne, halfL, towerSize);
 			drawRoutine(cursor, row, L, disk, towerTwo, halfL, towerSize);
 			drawRoutine(cursor, row, L, disk, towerThree, halfL, towerSize);
 			
-			//A linha È fechada
+			//A linha √© fechada
 			System.out.println(" ");
 			
 			//No final do loop, o cursor muda de linha
 			
 		}
 		
-		System.out.println("########".repeat(disk)); //tabuleiro sustenta as trÍs torres
+		System.out.println("########".repeat(disk)); //tabuleiro sustenta as tr√™s torres
 	}
 	
 	
 	
 	
 	
-	public static void errordraw() {         // implementamos esta funÁ„o para avisas qnd um input do utilizador È invalido
+	public static void errordraw() {         // implementamos esta fun√ß√£o para avisas qnd um input do utilizador √© invalido
 		
 		System.out.println("*".repeat(37));
 		System.out.println("*******Try again, not possible*******");
@@ -291,13 +291,13 @@ public class Proj1 {
 	
 	public static void diskxange (Stack<Integer> a ,Stack<Integer> b) {
 		int var;
-		// se o ultimo disco da torre para que vai o disco seclecionado for maior ent„o n„o È permitido
+		// se o ultimo disco da torre para que vai o disco seclecionado for maior ent√£o n√£o √© permitido
 		if (a.lastElement() >= b.lastElement() )   
 		{
-			errordraw();   //chama a funÁ„o a aviar que este paÁo n·o È possivel  
+			errordraw();   //chama a fun√ß√£o a aviar que este pa√ßo n√°o √© possivel  
 		}
 
-		else {  //se possivel executar passar os discos da torre, o ultimo disco È extraido da stack1 e colocado na stack 2
+		else {  //se possivel executar passar os discos da torre, o ultimo disco √© extraido da stack1 e colocado na stack 2
 			var = a.pop(); b.push(var);}
 	}
 	
@@ -308,63 +308,63 @@ public class Proj1 {
 		
 		/*
 		 * Na rotina de desenho, verifica-se qual o tamanho de uma torre e
-		 * qual o n˙mero que identifica o tamanho de um disco.
+		 * qual o n√∫mero que identifica o tamanho de um disco.
 		 * 
 		 */
-		int diskNumber; //o n˙mero dos disco est· relacionado com o seu tamanho visual 
+		int diskNumber; //o n√∫mero dos disco est√° relacionado com o seu tamanho visual 
 		
 		
 		/*
-		 * Se linha a onde estamos a desenhar È menor que o n˙mero de peÁas 
-		 * numa torre, ent„o certamente que tem de ser desenhado um disco.
-		 * O tamanho do disco e a sua posiÁ„o È definido pelo mÈtodo towerDraw.
-		 * Se o tamanho da torre È menor que a linha de desenho, ent„o estamos 
+		 * Se linha a onde estamos a desenhar √© menor que o n√∫mero de pe√ßas 
+		 * numa torre, ent√£o certamente que tem de ser desenhado um disco.
+		 * O tamanho do disco e a sua posi√ß√£o √© definido pelo m√©todo towerDraw.
+		 * Se o tamanho da torre √© menor que a linha de desenho, ent√£o estamos 
 		 * perante uma torre vazia ou parcialmente vazia. Se o cursor estiver 
-		 * no centro geomÈtrico da torre, ent„o este desenha um caracter "|". Caso
-		 * contr·rio, desenha um " ".
+		 * no centro geom√©trico da torre, ent√£o este desenha um caracter "|". Caso
+		 * contr√°rio, desenha um " ".
 		 */
 		
 		if (row < tower.size()) {
 			
-			diskNumber = tower.get(row); //n˙mero no index de valor row da stack selecionada
+			diskNumber = tower.get(row); //n√∫mero no index de valor row da stack selecionada
 			towerSize = tower.size(); //tamanho atual da torre, que muda a cada jogada
 			
-			/* MÈtodo towerDraw desenha um caracter na coluna escolhida, tomando em consideraÁ„o
-			 * o tamanho do disco e a posiÁ„o deste. Desenha tambÈm os pixeis "vazios"
+			/* M√©todo towerDraw desenha um caracter na coluna escolhida, tomando em considera√ß√£o
+			 * o tamanho do disco e a posi√ß√£o deste. Desenha tamb√©m os pixeis "vazios"
 			 * em torno dos disco.
 			 */
 			cursor = towerDraw(diskNumber, halfL, cursor, disk, towerSize, L);	
 			
-			//O mÈtodo towerDraw devolve a linha, j· com todas as colunas desenhadas de uma torre
+			//O m√©todo towerDraw devolve a linha, j√° com todas as colunas desenhadas de uma torre
 			System.out.print(cursor);
 			
 		} else {
 			
-			cursor = " "; //reset no cursor. Acaba tambÈm uma barreira de sepraÁ„o de torres
+			cursor = " "; //reset no cursor. Acaba tamb√©m uma barreira de sepra√ß√£o de torres
 			
-			/* Estamos perante o caso quando a linha È menor que o tamanho atual da
-			 * torre. Logo, sÛ ser„o desenhados os caracteres "|" e " ".
-			 * O for loop percorre todas as colunas de uma ˙nica torre.
+			/* Estamos perante o caso quando a linha √© menor que o tamanho atual da
+			 * torre. Logo, s√≥ ser√£o desenhados os caracteres "|" e " ".
+			 * O for loop percorre todas as colunas de uma √∫nica torre.
 			 */
 			
 			for (int col = 0; col < L + 1 ; col++) {
 				
 				if (col == halfL) {
 					
-					//caso a coluna esteja no centro geomÈtrico da torre, desenha-se "|"
+					//caso a coluna esteja no centro geom√©trico da torre, desenha-se "|"
 					cursor = cursor +  "|";
 				 
 				} else {
 					
-					//caso contr·rio, desenha-se um " ".
+					//caso contr√°rio, desenha-se um " ".
 					cursor = cursor +  " ";
 					
 				}
 			}
 			
-			/* Por fim, o cursor atual È printado na consola, mas sem ser mudada a linha.
-			 * Isto porque ainda falta desenhar as outras torres, a n„o ser que esta seja
-			 * a ˙ltima.
+			/* Por fim, o cursor atual √© printado na consola, mas sem ser mudada a linha.
+			 * Isto porque ainda falta desenhar as outras torres, a n√£o ser que esta seja
+			 * a √∫ltima.
 			 */
 			System.out.print(cursor);
 			
@@ -376,15 +376,15 @@ public class Proj1 {
 	public static String towerDraw (int diskNumber, int halfL, String cursor, int disk, int towerSize, int L) {
 		
 		/*
-		 * A funÁ„o towerDraw desenha os pixeis coluna a coluna de uma ˙nica torre.
-		 * ComeÁa no pixel mais ‡ esquerda (0) e acaba no mais ‡ direita (L);
-		 * Neste mÈtodo, o n˙mero que identifica o disk na stack È usado para definir
+		 * A fun√ß√£o towerDraw desenha os pixeis coluna a coluna de uma √∫nica torre.
+		 * Come√ßa no pixel mais √† esquerda (0) e acaba no mais √† direita (L);
+		 * Neste m√©todo, o n√∫mero que identifica o disk na stack √© usado para definir
 		 *  o intervalo de desenho do disco.
 		 */
 		
 		
-		int farRight_DiskBorder; //fronteira mais ‡ direta do intervalo de desenho do disco
-		int farLeft_DiskBorder; //fronteira mais ‡ esquerda do intervalo de desenho do disco
+		int farRight_DiskBorder; //fronteira mais √† direta do intervalo de desenho do disco
+		int farLeft_DiskBorder; //fronteira mais √† esquerda do intervalo de desenho do disco
 		
 		/* Como dito anteriormente: 
 		 * Intervalo de desenho de um disco - [halfL - diskNumber , halfL + diskNumber]
@@ -404,30 +404,30 @@ public class Proj1 {
 		farRight_DiskBorder = halfL + diskNumber; 
 		farLeft_DiskBorder = halfL - diskNumber;
 		
-		//Vari·veis que definem quais os valores que podem ser desenhados nos pixeis.
+		//Vari√°veis que definem quais os valores que podem ser desenhados nos pixeis.
 		String emptyPixel = " ";
 		String diskPixel = "*";
 		
-		cursor = " "; //reset no cursor. Acaba tambÈm uma barreira de sepraÁ„o de torres
+		cursor = " "; //reset no cursor. Acaba tamb√©m uma barreira de sepra√ß√£o de torres
 			
-		// O seguinte loop percorre todas as colunas de uma ˙nica torre.
+		// O seguinte loop percorre todas as colunas de uma √∫nica torre.
 		for (int col = 0; col < L + 1; col++ ) {
 			
-			// Se a coluna estiver dentro do intervalo de desenho do disco, ent„o È 
+			// Se a coluna estiver dentro do intervalo de desenho do disco, ent√£o √© 
 			// adiconado ao cursor um caracter "*".
 			if (col >= farLeft_DiskBorder && col <= farRight_DiskBorder && diskNumber != 0) {
 				
 				cursor = cursor + diskPixel;	//o cursor vai adicionando os pixeis atuais aos antigos
 				
 			} else {
-				//Caso se esteja fora do intervalo de desenho, È adicionado um " " ao cursor.
+				//Caso se esteja fora do intervalo de desenho, √© adicionado um " " ao cursor.
 				cursor = cursor + emptyPixel;
 				
 			}
 				 
 		}
 		 
-		//A linha È de uma torre È terminada e enviada para ser adicionadas ‡s linhas de outras torres
+		//A linha √© de uma torre √© terminada e enviada para ser adicionadas √†s linhas de outras torres
 		return cursor;
 	}
 	
