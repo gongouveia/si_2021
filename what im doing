@@ -1,0 +1,68 @@
+[33mcommit 39b9c4bc38503e9eeb2e9fd39510f82ab3f13b8b[m[33m ([m[1;36mHEAD -> [m[1;32mbranchOne[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m
+Author: chicorelvao <franciscofrelvao@gmail.com>
+Date:   Sun Mar 14 15:17:42 2021 +0000
+
+    Teste de novo ficheiro. Commit offline e depois para o githubt
+
+[33mcommit f2ecf8520bdf5b8bc277c5a8cb03c0fe4342aa14[m
+Merge: ccb538f 57250e7
+Author: chicorelvao <34384922+chicorelvao@users.noreply.github.com>
+Date:   Sun Mar 14 15:10:43 2021 +0000
+
+    Merge pull request #1 from chicorelvao/chicorelvao-patch-1
+    
+    Update read.me
+
+[33mcommit 57250e74d3865f2c3932552e6fc0cf91cf5196ab[m
+Author: chicorelvao <34384922+chicorelvao@users.noreply.github.com>
+Date:   Sun Mar 14 15:09:07 2021 +0000
+
+    Update read.me
+
+[33mcommit ccb538f38ed60cc3243a1c559f29912328614e48[m
+Author: chicorelvao <34384922+chicorelvao@users.noreply.github.com>
+Date:   Sun Mar 14 15:07:32 2021 +0000
+
+    Update README.md
+
+[33mcommit 8409cb069de10584ab50d05c3ce6fd2a812c6147[m
+Author: chicorelvao <franciscofrelvao@gmail.com>
+Date:   Sun Mar 14 15:04:57 2021 +0000
+
+    Commit do ficheiro do primeiro trabalho de entrega de SI. O commit foi dado após o trabalho estar terminado
+
+[33mcommit 81a831f467c8e2a73db3f1eb6782e5db24ffcf5b[m
+Author: chicorelvao <34384922+chicorelvao@users.noreply.github.com>
+Date:   Tue Mar 9 20:00:48 2021 +0000
+
+    Rename Proj1 to Proj1.java
+    
+    Adicionei um .java ao nome Proj1, porque o github nao estava a detetar a linguagem do ficheiro
+
+[33mcommit 2e4ab227f84d5b2ab387bc74b389411fab1b79b6[m
+Author: chicorelvao <34384922+chicorelvao@users.noreply.github.com>
+Date:   Tue Mar 9 19:54:07 2021 +0000
+
+    Rename Proj1.java to Trabalho_Um_Torre_de_Hanoi/Proj1
+    
+    Movi o ficheiro Proj1 para a pasta do trabalho 1
+
+[33mcommit 8597ba43a609ad289c2c70af4c8fc2fabaac56a9[m
+Author: chicorelvao <34384922+chicorelvao@users.noreply.github.com>
+Date:   Tue Mar 9 19:51:18 2021 +0000
+
+    Create read.me
+
+[33mcommit 44ce443ce38ea8b585f4c93a648744bdc1bb8da8[m
+Author: chicorelvao <34384922+chicorelvao@users.noreply.github.com>
+Date:   Tue Mar 9 19:37:55 2021 +0000
+
+    Create README.md
+
+[33mcommit bf43dfad7b7425cfcfb917bf83cd75421c877e7c[m
+Author: chicorelvao <34384922+chicorelvao@users.noreply.github.com>
+Date:   Tue Mar 9 19:29:59 2021 +0000
+
+    Add files via upload
+    
+    Inicialization
