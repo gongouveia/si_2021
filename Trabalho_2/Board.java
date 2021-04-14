@@ -2,7 +2,7 @@ package trabalho22;
 
 import java.util.Stack;
 
-
+//lol
 public class Board {
 	
 	Stack<Tiles> tileOnTable = new Stack<Tiles>();
