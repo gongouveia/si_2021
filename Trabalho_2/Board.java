@@ -2,17 +2,17 @@ package trabalho22;
 
 import java.util.Stack;
 
-//lol
+
 public class Board {
 	
 	Stack<Tiles> tileOnTable = new Stack<Tiles>();
-	Tiles topTile;      		//peÁa de domino na posiÁ„o superior do tabuleiro
-	Tiles botTile;				//peÁa de domino na posiÁ„o superior do tabuleiro
+	Tiles topTile;      		//pe√ßa de domino na posi√ß√£o superior do tabuleiro
+	Tiles botTile;				//pe√ßa de domino na posi√ß√£o superior do tabuleiro
 	int playerTiles;			//variavel iteradora
 	int humanPlayer = 0;        //variavel iteradora
-	boolean tilePlaced;			//variavel que verifica se alguma peÁa foi colocada por um jogador
+	boolean tilePlaced;			//variavel que verifica se alguma pe√ßa foi colocada por um jogador
 	boolean tileCheck;
-	int numberPlayers = 4;       //quantos jogadores est„o nesta partida, escalabilidade do codigo para mais jogadpres
+	int numberPlayers = 4;       //quantos jogadores est√£o nesta partida, escalabilidade do codigo para mais jogadpres
 	
 	boolean tie;         //
 	
@@ -24,8 +24,8 @@ public class Board {
 	}
 	
 	
-	//metodo que coloca as peÁas no tabuleiro
-		//se ainda n„o existir nenhuma peÁa no tabuleiro È emitido um aviso que o tabuleiro est· vazio
+	//metodo que coloca as pe√ßas no tabuleiro
+		//se ainda n√£o existir nenhuma pe√ßa no tabuleiro √© emitido um aviso que o tabuleiro est√° vazio
 	public boolean boardPlace (Tiles inTile, Player player, Board table, int indexTile, int nextPlayer) {
 		
 		tilePlaced = false;
@@ -39,19 +39,19 @@ public class Board {
 			//vai buscar a tile colocada no fundo do tabuleiro
 			botTile = tileOnTable.get(tileOnTable.size() - 1);
 			
-			//verificar se a peÁa colocada tem algum numero igual ao numero de cima da peÁa no topo do tabuleiro
+			//verificar se a pe√ßa colocada tem algum numero igual ao numero de cima da pe√ßa no topo do tabuleiro
 			if ( inTile.checkIn(topTile.getTopNumber())) {
 				
-				//caso tenha, È comparado qual dos lados da peÁa tem o n˙mero
-				//e a peÁa È rotacionada, caso seja necess·rio
-				//se a peÁa for uma carroÁa, n„o interessa, o primeiro if È ativado
+				//caso tenha, √© comparado qual dos lados da pe√ßa tem o n√∫mero
+				//e a pe√ßa √© rotacionada, caso seja necess√°rio
+				//se a pe√ßa for uma carro√ßa, n√£o interessa, o primeiro if √© ativado
 				if(inTile.getBotNumber() == topTile.getTopNumber()) 
 					{
 						tileOnTable.add(0, inTile);
 						tilePlaced = true;
 					
 					} 
-				else          //se a peÁa para ser colocada tem que ser rodada ent„o entra dentro deste else
+				else          //se a pe√ßa para ser colocada tem que ser rodada ent√£o entra dentro deste else
 					{
 						tileOnTable.add(0, inTile.rotateTile());
 						tilePlaced = true;
@@ -62,8 +62,8 @@ public class Board {
 			else if (inTile.checkIn(botTile.getBotNumber())) 
 			
 				{
-				//verificar se a peÁa colocada tem algum numero igual ao numero de baixo da peÁa no fundo do tabuleiro
-				//caso tenha, È comparado qual dos lados da peÁa tem o n˙mero
+				//verificar se a pe√ßa colocada tem algum numero igual ao numero de baixo da pe√ßa no fundo do tabuleiro
+				//caso tenha, √© comparado qual dos lados da pe√ßa tem o n√∫mero
 				
 					if(inTile.getTopNumber() == botTile.getBotNumber()) 
 					{
@@ -72,8 +72,8 @@ public class Board {
 					} 
 					else 
 					{
-					//e a peÁa È rotacionada, caso seja necess·rio
-					//se a peÁa for uma carroÁa, n„o interessa, o primeiro if È ativado
+					//e a pe√ßa √© rotacionada, caso seja necess√°rio
+					//se a pe√ßa for uma carro√ßa, n√£o interessa, o primeiro if √© ativado
 					
 						tileOnTable.push(inTile.rotateTile());
 						tilePlaced = true;
@@ -81,12 +81,12 @@ public class Board {
 					}
 				
 			}  
-			else         //se  apeÁa selecionada n„o for possivel ser jogada ou for uma entrada n„o aceite 
+			else         //se  ape√ßa selecionada n√£o for possivel ser jogada ou for uma entrada n√£o aceite 
 				{ 
 				
 				if (nextPlayer == humanPlayer) 
 					{
-						System.out.println("A peÁa selecionada n„o È permitida.");
+						System.out.println("A pe√ßa selecionada n√£o √© permitida.");
 					}
 				//rechamada do metodo para jogar 
 				
@@ -97,13 +97,13 @@ public class Board {
 			} 
 			else 
 			{
-			//se n„o existe peÁas no tabuleiro, a peÁa È adicionada sem restriÁıes
-			// perguntar ao jogador se quer rodar a peÁa
+			//se n√£o existe pe√ßas no tabuleiro, a pe√ßa √© adicionada sem restri√ß√µes
+			// perguntar ao jogador se quer rodar a pe√ßa
 			tileOnTable.push(inTile);
 			tilePlaced = true;
 			}
 		
-		//remove a peÁa da mao do jogador se peÁa for aceite
+		//remove a pe√ßa da mao do jogador se pe√ßa for aceite
 			if (tilePlaced)
 			{
 			player.handPlayer.remove(indexTile);
@@ -112,7 +112,7 @@ public class Board {
 		//return booleano a dizer que a joagda doi realizada com sucesso
 		return tilePlaced;
 	}
-//metodo q permite aos bots verificar se podem colocar uma peÁa, sem a colocar no tabuleiro
+//metodo q permite aos bots verificar se podem colocar uma pe√ßa, sem a colocar no tabuleiro
 	public boolean checkBoardPlace (Tiles inTile) {
 		
 		tileCheck = false;
@@ -124,12 +124,12 @@ public class Board {
 			//vai buscar a tile colocada no fundo do tabuleiro
 			botTile = tileOnTable.get(tileOnTable.size() - 1);
 			
-			//verificar se a peÁa colocada tem algum numero igual ao numero de cima da peÁa no topo do tabuleiro
+			//verificar se a pe√ßa colocada tem algum numero igual ao numero de cima da pe√ßa no topo do tabuleiro
 			if ( inTile.checkIn(topTile.getTopNumber())) {
 				
-				//caso tenha, È comparado qual dos lados da peÁa tem o n˙mero
-				//e a peÁa È rotacionada, caso seja necess·rio
-				//se a peÁa for uma carroÁa, n„o interessa, o primeiro if È ativado
+				//caso tenha, √© comparado qual dos lados da pe√ßa tem o n√∫mero
+				//e a pe√ßa √© rotacionada, caso seja necess√°rio
+				//se a pe√ßa for uma carro√ßa, n√£o interessa, o primeiro if √© ativado
 				if(inTile.getBotNumber() == topTile.getTopNumber()) {
 					
 					tileCheck = true;
@@ -139,16 +139,16 @@ public class Board {
 				
 				
 			} else if (inTile.checkIn(botTile.getBotNumber())) {
-				//verificar se a peÁa colocada tem algum numero igual ao numero de baixo da peÁa no fundo do tabuleiro
-				//caso tenha, È comparado qual dos lados da peÁa tem o n˙mero
+				//verificar se a pe√ßa colocada tem algum numero igual ao numero de baixo da pe√ßa no fundo do tabuleiro
+				//caso tenha, √© comparado qual dos lados da pe√ßa tem o n√∫mero
 				
 				if(inTile.getTopNumber() == botTile.getBotNumber()) {
 					
 					tileCheck = true;
 					
 				} else {
-					//e a peÁa È rotacionada, caso seja necess·rio
-					//se a peÁa for uma carroÁa, n„o interessa, o primeiro if È ativado
+					//e a pe√ßa √© rotacionada, caso seja necess√°rio
+					//se a pe√ßa for uma carro√ßa, n√£o interessa, o primeiro if √© ativado
 					
 					tileCheck = true;
 				}
@@ -159,7 +159,7 @@ public class Board {
 			}
 			
 		} else {
-			//se n„o existe peÁas no tabuleiro, a peÁa È adicionada sem restriÁıes
+			//se n√£o existe pe√ßas no tabuleiro, a pe√ßa √© adicionada sem restri√ß√µes
 			
 			
 			tileCheck = true;
@@ -172,16 +172,16 @@ public class Board {
 	}
 	
 	
-//metodo para mostrar a peÁas no tabuleiro
+//metodo para mostrar a pe√ßas no tabuleiro
 	
  	public void boardShow () {
 	
-		if(tileOnTable.size() != 0)     //casos em que h· peÁas me cima do tabuleiro
+		if(tileOnTable.size() != 0)     //casos em que h√° pe√ßas me cima do tabuleiro
 		{
 			System.out.println("____________________");
 			for (int i = 0; i < tileOnTable.size(); i++)   
 			{
-				//itera por todas as peÁas do tabuleiro e desenha as mesmas na consola
+				//itera por todas as pe√ßas do tabuleiro e desenha as mesmas na consola
 				System.out.println(tileOnTable.get(i).toString());
 				
 			}
@@ -193,7 +193,7 @@ public class Board {
 		}
 	}
 	
-	//verifica se alguem fica sem peÁas na m„o
+	//verifica se alguem fica sem pe√ßas na m√£o
 	public boolean checkWin(Player[] players) {
 		
 		boolean win = false;
@@ -201,7 +201,7 @@ public class Board {
 		for(int i = 0; i < numberPlayers; i++) {
 			
 			if (players[i].handPlayer.size() == 0) {
-				win = true;          //set win =true se algum jogador fica sem peÁas
+				win = true;          //set win =true se algum jogador fica sem pe√ßas
 				break;
 			}
 		}
@@ -211,7 +211,7 @@ public class Board {
 	}
 
 	public boolean checkDraw(Player[] players, Board table) {
-		//verifica se para cada jogador tem alguma peÁa que possa ser jogada
+		//verifica se para cada jogador tem alguma pe√ßa que possa ser jogada
 		
 		tie = true;
 		
@@ -226,7 +226,7 @@ public class Board {
 	}
 	
 	
-	//depois de cada match o tabuleiro È limpo para ser jogado um novo match
+	//depois de cada match o tabuleiro √© limpo para ser jogado um novo match
 	public void clearBoard() {
 		tileOnTable.clear();
 	}
