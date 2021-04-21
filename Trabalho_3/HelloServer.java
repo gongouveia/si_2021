@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.*;
 
 /**
  * A simple greeting server. More information about sockets at:
@@ -22,6 +23,11 @@ public class HelloServer
 	{
 		// Register service on port 1234
 		ServerSocket s = new ServerSocket(1234);
+		Scanner scan = new Scanner(System.in);
+		String[] user = new String[2];
+		
+		Stack<String[]> userData = new Stack<String[]>();
+		
 		while (true)
 		{
 			// Wait and accept a connection
@@ -51,5 +57,43 @@ public class HelloServer
 			dataIn.close();
 			s1.close();
 		}
+	}
+	
+	public boolean logIn(Scanner scan, String[] user, Stack<Stack> userData) {
+		System.out.println("Enter your username: ");
+		String userName = scan.nextLine();
+		String password;
+		int userNumber;
+		boolean logCondition = false;
+		
+		boolean newName = true;
+		
+		for(int i = 0; i < userData.size(); i++) {
+			if(userData.get(i).get(0).equals(userName)) {
+				newName = false;
+				userNumber = i;
+				password = userData.get(i)[1];
+				break;
+			}
+		}
+		
+		if(newName) {
+			System.out.println("You are a new user!\n Please, write a password");
+			password = scan.nextLine();
+			user.push(userName);
+			user.push(password);
+			userData.push(user);
+			logCondition = true;
+			
+		} else {
+			
+			
+			while(!userData.get(userNumber).get(1).equals(password)){
+				password = scan.nextLine();
+				System.out.println("You are logged in");
+			}
+		}
+		
+		return logCondition;
 	}
 }
