@@ -23,7 +23,8 @@ public class Client { // CLIENTE
 		OutputStream out = socket.getOutputStream();
 		DataOutputStream dataOut = new DataOutputStream(out);
 
-		boolean acabarJogo=true;
+		boolean acabarJogo = true;
+		
 		while (acabarJogo) {
 		
 			Scanner sc = new Scanner(System.in);
