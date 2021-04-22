@@ -59,17 +59,20 @@ public class HelloServer
 		}
 	}
 	
-	public boolean logIn(Scanner scan, String[] user, Stack<Stack> userData) {
+	public boolean logIn(Scanner scan, String[] user, Stack<String[]> userData) {
+
+		
 		System.out.println("Enter your username: ");
 		String userName = scan.nextLine();
-		String password;
-		int userNumber;
+		
+		String password = userData.get(0)[1];
+		int userNumber = 0;
 		boolean logCondition = false;
 		
 		boolean newName = true;
 		
 		for(int i = 0; i < userData.size(); i++) {
-			if(userData.get(i).get(0).equals(userName)) {
+			if(userData.get(i)[0].equals(userName)) {
 				newName = false;
 				userNumber = i;
 				password = userData.get(i)[1];
@@ -80,20 +83,27 @@ public class HelloServer
 		if(newName) {
 			System.out.println("You are a new user!\n Please, write a password");
 			password = scan.nextLine();
-			user.push(userName);
-			user.push(password);
+			user[0] = userName;
+			user[1] = password;
 			userData.push(user);
 			logCondition = true;
 			
 		} else {
 			
 			
-			while(!userData.get(userNumber).get(1).equals(password)){
+			while(!userData.get(userNumber)[1].equals(password)){
+				System.out.println("Please insert your password");
 				password = scan.nextLine();
-				System.out.println("You are logged in");
+				
 			}
+			System.out.println("You are logged in");
+			logCondition = true;
 		}
 		
 		return logCondition;
 	}
+	
+	
+
+
 }
