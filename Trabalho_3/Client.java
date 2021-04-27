@@ -1,7 +1,5 @@
 package trabalho3.Trabalho_3;
 
-
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -9,21 +7,20 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.Scanner;
+import java.util.HashMap;
 
 
-
-public class Client { // CLIENTE
+public class Client { 																// CLIENTE
 
 	public static void main(String args[]) throws IOException {
-		Socket socket = new Socket("localhost", 1234); // Abrir conexão com o servidor, na ponte 7000
+		Socket socket = new Socket("localhost", 1234); 					// Abrir conexão com o servidor, na ponte 7000
 
 		InputStream in = socket.getInputStream();
 		DataInputStream dataIn = new DataInputStream(in);
-
 		OutputStream out = socket.getOutputStream();
 		DataOutputStream dataOut = new DataOutputStream(out);
-
-		boolean acabarJogo = true;
+		boolean acabarJogo=true;
+		
 		
 		while (acabarJogo) {
 		
@@ -55,11 +52,12 @@ public class Client { // CLIENTE
 				
 				if (respostaCredencial.equals("INVALID_CREDENTIAL")) 
 				{
-					// Caso as credenciais estiverem erradas
+																						// Caso as credenciais estiverem erradas
 					System.out.println("Invalid Login - Try again [Y/N]: ");
 					dataOut.writeUTF(sc.nextLine().toUpperCase());
 					boolean invalid = true;
-					while (invalid) {
+					while (invalid) 
+					{
 						String respostaTentativa = dataIn.readUTF();
 						if (respostaTentativa.equals("TRY_AGAIN")) 
 						{
@@ -89,10 +87,44 @@ public class Client { // CLIENTE
 						
 						
 						
+						
+						
 					}
 				}
 			}
 		}
+		
+		
+		
+		boolean playing=true;
+		while(playing) {
+			
+			Scanner sc = new Scanner(System.in);
+			
+			//Recepção ao jogador
+			System.out.println("*".repeat(25));
+			System.out.println("* Welcome to Hanoi Tower *");
+			System.out.println("*".repeat(25)+"\n\n\n");
+			
+			
+			System.out.print("* Insert number of disks between 3 and 10 to continue: ");
+			
+			
+			
+			
+			
+			
+			sc.close();
+		}
+		
+		
+		
+
+	
+
 	}
 }
+
+
+
 			
