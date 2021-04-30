@@ -33,36 +33,7 @@ public class HelloServer
 		
 		Scanner sc = new Scanner(System.in);
 		
-		//Recepção ao jogador
-		System.out.println("*".repeat(25));
-		System.out.println("* Welcome to Hanoi Tower *");
-		System.out.println("*".repeat(25));
 		
-		/*
-		* Stacks vazios são arrays que permitem alterações aos seus elementos
-		* decidimos realizar este exercicio por Stacks pois para algoritmos 
-		* recursivos é uma otima ferramenta.
-		*/
-		
-		// criação de uma stack vazia para cada torre
-		Stack<Integer> aux1 = new Stack<Integer>();      //torre direita		
-		Stack<Integer> aux2 = new Stack<Integer>();      //stack intermedia
-		Stack<Integer> aux3 = new Stack<Integer>();      //stack esquerda
-
-		int disk = 0;    //número de discos usados durante o jogo 
-		int diskMin = 3; //número minimo de discos permitidos
-		int diskMax = 10;//número máximo de discos permitidos
-		//int counter = 0; // regista o numero de passos até resolver o puzzle
-		
-		int solve;       //regista o numero de tentaivas minimo para resolver o jogo
-		int size1 = 0;   //inicializa o tamanho de cada um dos stacks
-		int size2 = 0;
-		int size3 = 0;
-		
-		String option; // Input de jogadas ao longo do program
-		
-		int initialTowerSize =0;
-		int finalTowerSize =0;
 		
 		
 		
@@ -83,7 +54,7 @@ public class HelloServer
 			DataInputStream dataIn = new DataInputStream(in);
 
 			HashMap<String, String> credentials = new HashMap<String, String>();
-			boolean incorrectcredentials = true;
+			
 			boolean waiting = true;
 
 
@@ -188,8 +159,8 @@ public class HelloServer
 			
 			
 			
-			int initialpin = intPinVerifier(0,"initial");
-			int finalpin = intPinVerifier(initialpin,"final");
+
+
 			
 			
 			
@@ -218,7 +189,7 @@ public class HelloServer
 		case "initial":
 			do {
 				
-			System.out.println("digite o piroco inicial 1-A 2-B 3-C");
+			System.out.println("Digite o piroco inicial 1-A 2-B 3-C");
 			if(sc.hasNextInt()){      //seleciona apenas inputs inteiros
 				initialpin = sc.nextInt();
 				sc.nextLine();     // tratar do caso especial do /n quando se insere o inteiro
@@ -230,7 +201,7 @@ public class HelloServer
 			break;
 		case "final":
 			do {
-				System.out.println("digite o piroco final 1-A 2-B 3-C");
+				System.out.println("Digite o piroco final 1-A 2-B 3-C");
 				if(sc.hasNextInt()){      //seleciona apenas inputs inteiros
 					initialpin = sc.nextInt();
 					sc.nextLine();     // tratar do caso especial do /n quando se insere o inteiro
@@ -255,7 +226,64 @@ public class HelloServer
 	
 	
 	
-	
+	public static void credentialsRoutine(DataOutputStream dataOut, DataInputStream dataIn, HashMap<String, String> credentials ) {
+		boolean incorrectcredentials = true;
+		String login = dataIn.readUTF();
+		String pass = dataIn.readUTF();
+
+
+
+
+		for (String i : credentials.keySet())
+		{
+			if ((login.equalsIgnoreCase(i) && pass.equalsIgnoreCase(credentials.get(i)))) 
+			{
+				// JOGAR
+				dataOut.writeUTF("Incorrect Login");
+				System.out.println("\nIncorrect Login");
+				incorrectcredentials = false;
+			}
+		}		 
+
+
+		while (incorrectcredentials = true) 
+		{
+
+			dataOut.writeUTF("INCORRECT ");
+			System.out.println("\nIncorrect Login");
+			String resposta = dataIn.readUTF();
+			if (resposta.equalsIgnoreCase("Y")) 
+			{
+				dataOut.writeUTF("TRY_AGAIN");
+				System.out.println("Try again?!");
+				login = dataIn.readUTF();                                                 //
+				pass = dataIn.readUTF();												  //
+				for (String i : credentials.keySet()) {
+					if ((login.equalsIgnoreCase(i) && pass.equalsIgnoreCase(credentials.get(i))))
+					{
+						// JOGAR
+						dataOut.writeUTF("VALID_CREDENTIAL");
+						System.out.println("Valid credentials");
+						incorrectcredentials = false;
+					}
+					else
+					{
+						dataOut.writeUTF("INVALID_CREDENTIAL");
+						System.out.println("invalid credentials");
+					}
+				}	 
+			} 
+			else if (resposta.equalsIgnoreCase("n")) 
+			{
+				dataOut.writeUTF("NO_TRY");
+				System.out.println("client doens´t want to play");
+				incorrectcredentials = false;
+			}
+
+
+
+		}
+	}
 	
 	
 	

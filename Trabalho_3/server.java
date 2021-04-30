@@ -1,4 +1,4 @@
-package serverproject;
+package trabalho3.Trabalho_3;
 
 import java.util.*;
 import java.io.DataInputStream;
@@ -119,12 +119,35 @@ public class server
 
 			int initialpin = serverUtil.intPinVerifier(0,"initial");
 			int finalpin = serverUtil.intPinVerifier(initialpin,"final");
-
+			
+			boolean diskCheck = false;
+			
+			while(!diskCheck ) {
+				dataOut.writeUTF("DISK_NUMBER");
+				dataOut.writeUTF("* Insert number of disks between 3 and 10 to continue: ");
+				String diskString = dataIn.readUTF();
+				
+				try {
+					disk = Integer.parseInt(diskString);
+					if(disk >= diskMin && disk <= diskMax) {
+						diskCheck = true;
+						dataOut.writeUTF("You picked " + disk + " disks");
+					} else {
+						dataOut.writeUTF("Please intsert a number between 3 and 10: ");
+					}
+					
+					
+				}catch(Exception e) {
+					dataOut.writeUTF("Please intsert a number: ");
+				}
+				
+			}
 			solve = (int)Math.pow(2,disk)-1; 
 
 			option = sc.nextLine().toUpperCase();        /*usamos .toUpperCase(); para que o jogo possa
 	 		parar se o jogador seleccioanr y/Y */
-
+			
+			
 
 			boolean endGame= false;
 
