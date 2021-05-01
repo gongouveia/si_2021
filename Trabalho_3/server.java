@@ -50,8 +50,7 @@ public class server
 
 
 		int disk = 0;    //número de discos usados durante o jogo 
-		int diskMin = 3; //número minimo de discos permitidos
-		int diskMax = 10;//número máximo de discos permitidos
+		
 		//int counter = 0; // regista o numero de passos até resolver o puzzle
 
 		int solve;       //regista o numero de tentaivas minimo para resolver o jogo
@@ -63,85 +62,79 @@ public class server
 		String displayaux;
 		int initialTowerSize =0;
 		int finalTowerSize =0;
+		
+		
+		HashMap<String, String> credentials = new HashMap<String, String>();
+		boolean incorrectcredentials = true;
+		boolean waiting = true;
+		
+		
+		
+		
+		System.out.println("Waiting for client.");
+		Socket s1 = s.accept(); 
+		System.out.println("Server connected.");// Wait and accept a connection
+		OutputStream out = s1.getOutputStream();
+		DataOutputStream dataOut = new DataOutputStream(out);
+		InputStream in = s1.getInputStream(); 						// Fornece um input stream para este socket
+		DataInputStream dataIn = new DataInputStream(in);
 
 
 
-
-
-
-
-		while (true)
-		{
-			Socket s1 = s.accept(); 
-			System.out.println("server connected");// Wait and accept a connection
+		
+		//LOOP para perguntar ao cliente se quer conectar ao server ou nao
+		while (waiting) {
+			
 			// Get a stream associated with the socket
-			OutputStream out = s1.getOutputStream();
-			DataOutputStream dataOut = new DataOutputStream(out);
-			InputStream in = s1.getInputStream(); 						// Fornece um input stream para este socket
-			DataInputStream dataIn = new DataInputStream(in);
+			dataOut.writeUTF("INIT");
+			
+			String request = dataIn.readUTF(); // Usa o DataInputStream para ler a string enviada pelo cliente
+			
+			if (request.equalsIgnoreCase("Y")) 
+			{
+				dataOut.writeUTF("PLAY");
+				System.out.println("client to play");
+				waiting = false;
+			} 
+			else if (request.equalsIgnoreCase("N"))
+			{
+				dataOut.writeUTF("NO_TRY");
+				System.out.println("client doesn't want to play");
+				
+			} 
+			else 
+			{
+				dataOut.writeUTF("INVALID_COMAND");
+			}
+		
+			dataOut.flush();
+			System.out.println("client answered");
+			s.close();
+		}
 
-			HashMap<String, String> credentials = new HashMap<String, String>();
-			boolean incorrectcredentials = true;
-			boolean waiting = true;
+			
 
 
 
 
-			//base de dados
-			credentials.put("Paiva","1234");
-			credentials.put("Relvas", "1234");
-			//base de dados password encriptada
-
-			//credentials.put("Paiva","03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4");  
-			//credentials.put("Relvas","03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4");
+			
 
 
 
-			while(serverUtil.waitRoutine());
+			//String login = dataIn.readUTF();
+			//String pass = dataIn.readUTF();
 
 
+			//serverUtil.credentialValidator(credentials, login,  pass);  //true se for invalido
 
-			String login = dataIn.readUTF();
-			String pass = dataIn.readUTF();
-
-
-			serverUtil.credentialValidator(credentials, login,  pass);  //true se for invalido
-
-			/*
-			 * 
-			 * 
-			 * inserir aqui a parte de perguntar quantos discos deve ter o jogo
-			 * 
-			 * 
-			 * 
-			 * 
-			 */
+			
 
 			int initialpin = serverUtil.intPinVerifier(0,"initial");
 			int finalpin = serverUtil.intPinVerifier(initialpin,"final");
 			
-			boolean diskCheck = false;
+			//pede ao cliente o número de discos
+			disk = serverUtil.diskNumberPick(dataIn, dataOut, disk);
 			
-			while(!diskCheck ) {
-				dataOut.writeUTF("DISK_NUMBER");
-				dataOut.writeUTF("* Insert number of disks between 3 and 10 to continue: ");
-				String diskString = dataIn.readUTF();
-				
-				try {
-					disk = Integer.parseInt(diskString);
-					if(disk >= diskMin && disk <= diskMax) {
-						diskCheck = true;
-						dataOut.writeUTF("You picked " + disk + " disks");
-					} else {
-						dataOut.writeUTF("Please intsert a number between 3 and 10: ");
-					}
-					
-					
-				}catch(Exception e) {
-					dataOut.writeUTF("Please intsert a number: ");
-				}
-				
-			}
 			solve = (int)Math.pow(2,disk)-1; 
 
 			option = sc.nextLine().toUpperCase();        /*usamos .toUpperCase(); para que o jogo possa
@@ -287,6 +280,6 @@ public class server
 
 	}
 
-}
+
 
 

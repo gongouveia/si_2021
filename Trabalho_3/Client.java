@@ -1,4 +1,4 @@
-package serverproject;
+package trabalho3.Trabalho_3;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -25,18 +25,22 @@ public class client { 																// CLIENTE
 		while (acabarJogo) {
 
 			Scanner sc = new Scanner(System.in);
-			System.out.println("Connect to server 'Torre de Hanoy' [Y/N]: ");
+			
 
-			dataOut.writeUTF(sc.nextLine());
-
-			dataOut.flush();
+			
 			// Ler a resposta do servidor
 			String serverResponse = dataIn.readUTF();
 
 							
 
 			switch(serverResponse){
-
+			
+			case "INIT":
+				
+				System.out.println("Connect to server 'Torre de Hanoy' [Y/N]: ");
+				dataOut.writeUTF(sc.nextLine());
+				break;
+				
 			case "PROTOCOL_ERROR":
 
 				System.out.println("Connection timed out");
@@ -108,7 +112,7 @@ public class client { 																// CLIENTE
 				
 			case "NO_TRY":
 
-				System.out.println("Connection timed out");
+				System.out.println("Client doesn't want to connect");
 				//invalid = false;
 				break;
 
@@ -174,7 +178,7 @@ public class client { 																// CLIENTE
 		System.out.println("*".repeat(25));
 		System.out.println("* Welcome to Hanoi Tower *");
 		System.out.println("*".repeat(25)+"\n\n\n");
-		System.out.print("* Insert number of disks between 3 and 10 to continue: ");	
+		
 		
 		}
 	
