@@ -67,16 +67,7 @@ public class serverUtil {
 	//return aux;		
 	}
 	
-	public static Boolean waitRoutine() throws IOException{
-		
-		ServerSocket s = new ServerSocket(1234);
-		Socket s1 = s.accept(); 									// Wait and accept a connection
-		// Get a stream associated with the socket
-		OutputStream out = s1.getOutputStream();
-		DataOutputStream dataOut = new DataOutputStream(out);
-		InputStream in = s1.getInputStream(); 						// Fornece um input stream para este socket
-		DataInputStream dataIn = new DataInputStream(in);	
-		
+	public static Boolean waitRoutine(DataInputStream dataIn, DataOutputStream dataOut) throws IOException{
 		
 		boolean waiting = true;	
 		
@@ -103,7 +94,7 @@ public class serverUtil {
 	
 		dataOut.flush();
 		System.out.println("client answered");
-		s.close();
+		
 		return waiting;
 	}
 	
@@ -135,61 +126,49 @@ public class serverUtil {
 		
 	}
 
-    
-	public static int intPinVerifier(int verifier,String mod) throws IOException {  //verifica se o ultmimo é igual ao inicial
+public static int[] intPinVerifier(DataInputStream dataIn, DataOutputStream dataOut) throws IOException {  //verifica se o ultmimo é igual ao inicial
 		
-		
-		int initialpin=0;
+		dataOut.writeUTF("PIN_VERIFIER");
 		
 		int pinmax=3;
 		int pinmin=1;
-		
-		
-		
-		switch(mod) {
-		
-		case "initial":
-			do {
-				
-			System.out.println("digite o piroco inicial 1-A 2-B 3-C");
-			if(sc.hasNextInt()){      //seleciona apenas inputs inteiros
-				initialpin = Integer.parseInt(dataIn.readUTF());;
-				//initialpin = sc.nextInt();
-				//sc.nextLine();     // tratar do caso especial do /n quando se insere o inteiro
-				} 
-			else{initialpin = 0;   //valor para dar erro e voltar a pedir um input
-				}
-	
-			}while (initialpin  < pinmin | initialpin  > pinmax );
-			dataOut.writeUTF("INITIAL_PIN");
-			dataOut.writeUTF("initial pin selected :"+initialpin);
+		int initialpin=0;
+		int finalpin = 0;
+		int[] pinArray = new int[2];
+		boolean pinCheck = false;
+
+		while(!pinCheck ) {
 			
-			break;
-		case "final":
-			do {
-				System.out.println("digite o piroco final 1-A 2-B 3-C");
-				if(sc.hasNextInt()){      //seleciona apenas inputs inteiros
-					initialpin = Integer.parseInt(dataIn.readUTF());
-					sc.nextLine();     // tratar do caso especial do /n quando se insere o inteiro
-				}					
-				else{
-					initialpin = 0;   //valor para dar erro e voltar a pedir um input
-					}
-				
-				if (initialpin ==verifier) {
-					initialpin =0;
+			String pinIn = dataIn.readUTF();
+			String pinOut = dataIn.readUTF();
+			System.out.println("Initial pin:" +  pinIn + " Final pin:" + pinOut);
+			try {
+				initialpin = Integer.parseInt(pinIn);
+				finalpin = Integer.parseInt(pinOut);
+
+				if(initialpin >= pinmin && initialpin <= pinmax && finalpin >= pinmin && finalpin <= pinmax && finalpin != initialpin) {
+					pinCheck = true;
+					dataOut.writeUTF("PIN_SELECTED");
+					pinArray[0] = initialpin;
+					pinArray[1] = finalpin;
+
+				} else {
+					dataOut.writeUTF("PIN_ERROR");
+					dataOut.writeUTF("PIN_VERIFIER");
 				}
-				}while (initialpin  < pinmin | initialpin  > pinmax );
-			dataOut.writeUTF("FINAL_PIN");
-			dataOut.writeUTF("initial pin selected :"+initialpin);
-			break;
-	}
-		
-		
-	//requestOUT =dataIn.writeUTF();
-	return initialpin;
+				
+			} catch(Exception e) {
+				dataOut.writeUTF("INVALID_NUMBER");
+				dataOut.writeUTF("PIN_VERIFIER");
+			}
+			
+		}
+
+
+	return pinArray;
 	
 	}
+
 
 	public static int diskNumberPick(DataInputStream dataIn, DataOutputStream dataOut, int disk) throws IOException {
 		boolean diskCheck = false;
@@ -198,25 +177,28 @@ public class serverUtil {
 		
 		while(!diskCheck ) {
 			dataOut.writeUTF("DISK_NUMBER");
-			dataOut.writeUTF("* Insert number of disks between 3 and 10 to continue: ");
+			
 			String diskString = dataIn.readUTF();
 			
 			try {
 				disk = Integer.parseInt(diskString);
+				System.out.println(disk >= diskMin && disk <= diskMax);
 				if(disk >= diskMin && disk <= diskMax) {
 					diskCheck = true;
-					dataOut.writeUTF("You picked " + disk + " disks");
+					dataOut.writeUTF("DISKS_ACCEPTED");
 				} else {
-					dataOut.writeUTF("Please intsert a number between 3 and 10: ");
+					dataOut.writeUTF("DISKS_DECLINED");
+					dataOut.writeUTF("DISK_NUMBER");
 				}
 				
 				
 			}catch(Exception e) {
-				dataOut.writeUTF("Please intsert a number: ");
+				dataOut.writeUTF("DISKS_DECLINED_ERROR");
+				dataOut.writeUTF("DISK_NUMBER");
 			}
 			
 		}
-		
+		System.out.println("Number of disks: " + disk);
 		return disk;
 	}
 	

@@ -23,7 +23,7 @@ public class clientUtil {
 		System.out.println("\n");  
 	}
 
-	public static void optionsMenu() {
+	public static void playOptions() {
 
 		System.out.println("1:A-->B");                        
 		System.out.println("2:A-->C");

@@ -92,7 +92,7 @@ public class server
 			
 			if (request.equalsIgnoreCase("Y")) 
 			{
-				dataOut.writeUTF("PLAY");
+				dataOut.writeUTF("LOGIN");
 				System.out.println("client to play");
 				waiting = false;
 			} 
@@ -116,39 +116,33 @@ public class server
 
 
 
-
-			
-
-
-
-			//String login = dataIn.readUTF();
-			//String pass = dataIn.readUTF();
+			String login = dataIn.readUTF();
+			String pass = dataIn.readUTF();
 
 
 			//serverUtil.credentialValidator(credentials, login,  pass);  //true se for invalido
 
 			
 
-			int initialpin = serverUtil.intPinVerifier(0,"initial");
-			int finalpin = serverUtil.intPinVerifier(initialpin,"final");
+			int[] selectedPin = serverUtil.intPinVerifier(dataIn, dataOut);
+		
 			
 			//pede ao cliente o número de discos
 			disk = serverUtil.diskNumberPick(dataIn, dataOut, disk);
 			
 			solve = (int)Math.pow(2,disk)-1; 
 
-			option = sc.nextLine().toUpperCase();        /*usamos .toUpperCase(); para que o jogo possa
-	 		parar se o jogador seleccioanr y/Y */
-			
 			
 
-			boolean endGame= false;
-
+			boolean endGame = false;
+			dataOut.writeUTF("GAME_STARTED");
+			
 			while(!endGame) {
 
 
 				//serverUtil.optionsMenu();
-				dataOut.writeUTF("GAME_STARTED");
+				
+				dataOut.writeUTF("PLAY");
 				String switchoption = dataIn.readUTF();
 
 
@@ -205,21 +199,12 @@ public class server
 				Object[] auxx3 = aux3.toArray(); 
 				size3 = auxx3.length;
 
-				switch(initialpin) {                               //esta parte serve para verificar qual o tamanho do pin inicial e do pin final
-																//importante para validar qunado o jogo acaba
-																//ou seja quando o pin final tiver todas as peças e o pin inicial apenas uma
-					case 1:
-						initialTowerSize=size1;
-						break;
-					case 2:
-						initialTowerSize=size2;
-						break;
-					case 3:
-						initialTowerSize=size3;
-						break;
-				}
+				 //esta parte serve para verificar qual o tamanho do pin inicial e do pin final
+				//importante para validar qunado o jogo acaba
+				//ou seja quando o pin final tiver todas as peças e o pin inicial apenas uma
+					
 
-				switch(finalpin) {
+				switch(selectedPin[1]) {
 
 					case 1:
 						finalTowerSize=size1;
@@ -234,14 +219,14 @@ public class server
 
 
 
-				if (initialTowerSize==1 && finalTowerSize ==disk+1)   {
+				if (finalTowerSize == disk+1)   {
 					System.out.println("roundOver");
 
 					dataOut.writeUTF("END_GAME");
 					dataOut.writeUTF(" Game solved with sucess *\nProblem solved in "+ counter + " attemps\nCould be solved in " + solve +" attemps");
 
 
-					serverUtil.displayMenu();
+					//serverUtil.displayMenu();
 					displayaux = dataIn.readUTF();
 
 					switch (displayaux) {

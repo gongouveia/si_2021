@@ -7,10 +7,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.Scanner;
+import java.util.Stack;
 import java.util.HashMap;
 
 
-public class client { 																// CLIENTE
+public class Client { 																// CLIENTE
 
 	public static void main(String args[]) throws IOException {
 		Socket socket = new Socket("localhost", 1234); 					// Abrir conexão com o servidor, na ponte 7000
@@ -19,9 +20,19 @@ public class client { 																// CLIENTE
 		DataInputStream dataIn = new DataInputStream(in);
 		OutputStream out = socket.getOutputStream();
 		DataOutputStream dataOut = new DataOutputStream(out);
-		boolean acabarJogo=true;
+		boolean acabarJogo = true;
 
+		
+		Stack<Integer> StackOne = new Stack<Integer>();      //torre direita		
+		Stack<Integer> StackTwo = new Stack<Integer>();      //stack intermedia
+		Stack<Integer> StackThree = new Stack<Integer>();      //stack esquerda	
+		
+		StackOne.push(1000);
+		StackTwo.push(1000);
+		StackThree.push(1000);
+		
 		gameStart();
+		
 		while (acabarJogo) {
 
 			Scanner sc = new Scanner(System.in);
@@ -48,7 +59,7 @@ public class client { 																// CLIENTE
 				break;
 
 
-			case "PLAY":	
+			case "LOGIN":	
 
 				System.out.println("The server replied: " + serverResponse);
 				System.out.println("insert username: ");
@@ -101,15 +112,50 @@ public class client { 																// CLIENTE
 				break;
 			
 			case "DISK_NUMBER":
-				dataIn.readUTF();
-				dataOut.writeUTF(sc.nextLine());
-				dataIn.readUTF();
+				System.out.println("* Insert number of disks between 3 and 10 to continue: ");
+				String diskNumber = sc.nextLine();
+				dataOut.writeUTF(diskNumber);
+				
+				switch(dataIn.readUTF()) {
+					case "DISKS_ACCEPTED":
+						System.out.println("You picked " + diskNumber + " disks");
+						break;
+						
+					case "DISKS_DECLINED":
+						System.out.println("Please select a number between 3 and 10.");
+						break;
+						
+					case "DISKS_DECLINED_ERROR":
+						System.out.println("Please insert a number.");
+						break;
+				}
+				break;
+				
+			case "PIN_VERIFIER":
 
+				System.out.println("* Insert initial pin: ");
+				String initialpin = sc.nextLine();
+				dataOut.writeUTF(initialpin);
+				
+				System.out.println("* Insert final pin: ");
+				String finalpin = sc.nextLine();
+				dataOut.writeUTF(finalpin);
+
+				break;
 			case "GAME_STARTED":
 				clientUtil.welcome();
 				
+				break;
+			case "PLAY":
+				clientUtil.playOptions();
+				String play = sc.nextLine();
+				dataOut.writeUTF(play);
+				break;
 				
+			case "STACK_ONE_ADD":
 				
+				break;
+			
 			case "NO_TRY":
 
 				System.out.println("Client doesn't want to connect");
@@ -121,15 +167,6 @@ public class client { 																// CLIENTE
 				System.out.println(dataIn.readUTF());    
 				break;
 
-
-			case "INITIAL_PIN":
-				System.out.println(dataIn.readUTF());
-				break;
-				
-				
-			case "FINAL_PIN":
-				System.out.println(dataIn.readUTF());
-				break;
 				
 				
 			case "MENU":
