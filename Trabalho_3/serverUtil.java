@@ -18,21 +18,22 @@ public class serverUtil {
 	
 	
 
-	public static int diskXange (Stack<Integer> a ,Stack<Integer> b, int movement) {
+	public static int diskXange ( DataOutputStream dataOut, Stack<Integer> a ,Stack<Integer> b, int movement) throws IOException {
 
 		
 		int var;
 		// se o ultimo disco da torre para que vai o disco seclecionado for maior então não é permitido
 		if (a.lastElement() >= b.lastElement() )   
 		{
-			//errorDraw();   //chama a função a aviar que este paço náo é possivel
-			
+			dataOut.writeUTF("MOVE_ERROR");
+			System.out.println("Forbidden move.");
 		}
 
 		else {  //se possivel executar passar os discos da torre, o ultimo disco é extraido da stack1 e colocado na stack 2
 			var = a.pop(); b.push(var);
 			movement ++; //o counter so é incrementado, se existir movimento de discos
-			}
+			System.out.println("Accepted move.");
+		}
 		return movement; // o counter é igualado ao movement 
 	
 	
@@ -43,27 +44,27 @@ public class serverUtil {
 
 	
 
-	public void pinFiller(int disk,int initialpin,Stack<Integer> aux1,Stack<Integer> aux2,Stack<Integer> aux3) {
+	public static void pinFiller(int disk,int initialpin,Stack<Integer> aux1,Stack<Integer> aux2,Stack<Integer> aux3) {
 	//passar o void para Stack<Integer>
 	//Stack<Integer> aux = aux1;  //neste momento todas as stacks são iguais 
-	for (int j = disk; j >= 1; j--) {
+		for (int j = disk; j >= 1; j--) {
+			
+			switch (initialpin) {
 		
-		switch (initialpin) {
-	
-		case 1 :
-			aux1.push(j); 
-			break;
-	
-		case 2:
-			aux2.push(j); 
-			break;
-	
-		case 3:
-			aux3.push(j); 
-			break;
+			case 1 :
+				aux1.push(j); 
+				break;
+		
+			case 2:
+				aux2.push(j); 
+				break;
+		
+			case 3:
+				aux3.push(j); 
+				break;
+			}
+		
 		}
-		
-	}
 	//return aux;		
 	}
 	
@@ -158,7 +159,7 @@ public static int[] intPinVerifier(DataInputStream dataIn, DataOutputStream data
 				}
 				
 			} catch(Exception e) {
-				dataOut.writeUTF("INVALID_NUMBER");
+				dataOut.writeUTF("PIN_INVALID_NUMBER");
 				dataOut.writeUTF("PIN_VERIFIER");
 			}
 			

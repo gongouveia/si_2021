@@ -31,8 +31,14 @@ public class Client { 																// CLIENTE
 		StackTwo.push(1000);
 		StackThree.push(1000);
 		
-		gameStart();
+		Stack<Stack<Integer>> stackArray = new Stack<Stack<Integer>>();
+		stackArray.push(StackOne);
+		stackArray.push(StackTwo);
+		stackArray.push(StackThree);
 		
+		gameStart();
+		int disk = 3;
+		int initPin = 1;
 		while (acabarJogo) {
 
 			Scanner sc = new Scanner(System.in);
@@ -119,6 +125,7 @@ public class Client { 																// CLIENTE
 				switch(dataIn.readUTF()) {
 					case "DISKS_ACCEPTED":
 						System.out.println("You picked " + diskNumber + " disks");
+						disk  = Integer.parseInt(diskNumber);
 						break;
 						
 					case "DISKS_DECLINED":
@@ -140,22 +147,69 @@ public class Client { 																// CLIENTE
 				System.out.println("* Insert final pin: ");
 				String finalpin = sc.nextLine();
 				dataOut.writeUTF(finalpin);
-
+				
+				switch(dataIn.readUTF()) {
+				case "PIN_SELECTED":
+		
+					initPin = Integer.parseInt(initialpin);
+					break;
+					
+				case "PIN_ERROR":
+					System.out.println("Please select a number between 1 and 3.");
+					break;
+					
+				case "PIN_INVALID_NUMBER":
+					System.out.println("Please insert a number.");
+					break;
+			}
+				
 				break;
 			case "GAME_STARTED":
 				clientUtil.welcome();
 				
 				break;
+				
+			case "PIN_FILLER":
+				
+				clientUtil.pinFiller(disk,initPin, StackOne, StackTwo, StackThree);
+				
+				break;
+				
 			case "PLAY":
 				clientUtil.playOptions();
 				String play = sc.nextLine();
 				dataOut.writeUTF(play);
 				break;
 				
-			case "STACK_ONE_ADD":
-				
+			case "MOVE_DISK":
+				String move = dataIn.readUTF();
+				switch(move) {
+					case"AB":
+						clientUtil.diskXange(StackOne, StackTwo);
+						break;
+					case"AC":
+						clientUtil.diskXange(StackOne, StackThree);
+						break;
+					case"BA":
+						clientUtil.diskXange(StackTwo, StackOne);
+						break;
+					case"BC":
+						clientUtil.diskXange(StackTwo, StackThree);
+						break;
+					case"CA":
+						clientUtil.diskXange(StackThree, StackOne);
+						break;
+					case"CB":
+						clientUtil.diskXange(StackThree, StackTwo);
+						break;
+					case"":
+						break;
+					default:
+						break;
+				}
 				break;
-			
+			case "MOVE_ERROR":
+				System.out.println("You moved is not allowed. Play again.");
 			case "NO_TRY":
 
 				System.out.println("Client doesn't want to connect");
@@ -163,8 +217,8 @@ public class Client { 																// CLIENTE
 				break;
 
 			case "DRAW":
-
-				System.out.println(dataIn.readUTF());    
+				
+				clientUtil.draw(disk, StackOne, StackTwo, StackThree);    
 				break;
 
 				

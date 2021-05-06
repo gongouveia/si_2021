@@ -44,10 +44,33 @@ public class clientUtil {
 		b.push(var);
 			
 	}
+	
+	public static void pinFiller(int disk,int initialpin,Stack<Integer> aux1,Stack<Integer> aux2,Stack<Integer> aux3) {
+		//passar o void para Stack<Integer>
+		//Stack<Integer> aux = aux1;  //neste momento todas as stacks são iguais 
+			for (int j = disk; j >= 1; j--) {
+				
+				switch (initialpin) {
+			
+				case 1 :
+					aux1.push(j); 
+					break;
+			
+				case 2:
+					aux2.push(j); 
+					break;
+			
+				case 3:
+					aux3.push(j); 
+					break;
+				}
+			
+			}
+		//return aux;		
+		}
 
 
-
-	public void draw(int disk, Stack<Integer> towerOne, Stack<Integer> towerTwo, Stack<Integer> towerThree) {
+	public static void draw(int disk, Stack<Integer> towerOne, Stack<Integer> towerTwo, Stack<Integer> towerThree) {
 
 
 		/*   
@@ -133,7 +156,7 @@ public class clientUtil {
 		System.out.println("########".repeat(disk)); //tabuleiro que sustenta as três torres
 	}
 	
-	public void drawRoutine (String cursor, int row, int L, int disk, Stack<Integer> tower, int halfL, int towerSize) {
+	public static void drawRoutine (String cursor, int row, int L, int disk, Stack<Integer> tower, int halfL, int towerSize) {
 
 		/* 
 		 * Na rotina de desenho, verifica-se qual o tamanho de uma torre e
@@ -202,7 +225,7 @@ public class clientUtil {
 	}
 
 
-	public String towerDraw (int diskNumber, int halfL, String cursor, int disk, int towerSize, int L) {
+	public static String towerDraw (int diskNumber, int halfL, String cursor, int disk, int towerSize, int L) {
 
 
 

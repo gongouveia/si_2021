@@ -131,50 +131,56 @@ public class server
 			disk = serverUtil.diskNumberPick(dataIn, dataOut, disk);
 			
 			solve = (int)Math.pow(2,disk)-1; 
-
+			
 			
 
 			boolean endGame = false;
 			dataOut.writeUTF("GAME_STARTED");
+			serverUtil.pinFiller(disk,selectedPin[0], aux1, aux2, aux3);
+			dataOut.writeUTF("PIN_FILLER");
 			
 			while(!endGame) {
 
 
 				//serverUtil.optionsMenu();
-				
+				dataOut.writeUTF("DRAW");
 				dataOut.writeUTF("PLAY");
 				String switchoption = dataIn.readUTF();
-
+				
+				
+				dataOut.writeUTF("MOVE_DISK");
 
 				switch (switchoption) {       //implementamos este switch para avaliar cada um dos inputs do ultilizador
 				//além disso, um movimento so é contado, se existir movimento de discos entre pirâmides
 				case "1":
-					counter = serverUtil.diskXange(aux1,aux2, counter);    //1:A-->B
+					
+					counter = serverUtil.diskXange(dataOut, aux1,aux2, counter);    //1:A-->B
 					dataOut.writeUTF("AB");
 					break;
 
 				case "2":
-					counter = serverUtil.diskXange(aux1,aux3, counter);    //2:A-->C
+					counter = serverUtil.diskXange(dataOut, aux1,aux3, counter);    //2:A-->C
 					dataOut.writeUTF("AC");
 					break;
 
 				case "3":
-					counter = serverUtil.diskXange(aux2,aux1, counter);    //3:B-->A
+					counter = serverUtil.diskXange(dataOut, aux2,aux1, counter);    //3:B-->A
 					dataOut.writeUTF("BA");
 					break;
 
 				case "4":
-					counter = serverUtil.diskXange(aux2,aux3, counter);    //4:B-->C
+					counter = serverUtil.diskXange(dataOut, aux2,aux3, counter);    //4:B-->C
 					dataOut.writeUTF("BC");
 					break;
 
 				case "5":
-					counter = serverUtil.diskXange(aux3,aux1, counter);    //5:C-->A
+					System.out.println("bruh5");
+					counter = serverUtil.diskXange(dataOut, aux3,aux1, counter);    //5:C-->A
 					dataOut.writeUTF("CA");
 					break;
 
 				case "6":
-					counter = serverUtil.diskXange(aux3,aux2, counter);	 //6:C-->B
+					counter = serverUtil.diskXange(dataOut, aux3,aux2, counter);	 //6:C-->B
 					dataOut.writeUTF("CB");
 					break;
 
@@ -188,7 +194,9 @@ public class server
 					break;
 
 				}
-
+				
+				
+				
 				Object[] auxx1 = aux1.toArray(); 
 				size1 = auxx1.length;
 
