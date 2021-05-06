@@ -48,19 +48,26 @@ public class serverUtil {
 	public static void pinFiller(int disk,int initialpin,Stack<Integer> aux1,Stack<Integer> aux2,Stack<Integer> aux3) {
 	//passar o void para Stack<Integer>
 	//Stack<Integer> aux = aux1;  //neste momento todas as stacks são iguais 
+		
+		aux1.push(1000);
+		aux2.push(1000);
+		aux3.push(1000);
 		for (int j = disk; j >= 1; j--) {
 			
 			switch (initialpin) {
 		
 			case 1 :
+				
 				aux1.push(j); 
 				break;
 		
 			case 2:
+				
 				aux2.push(j); 
 				break;
 		
 			case 3:
+				
 				aux3.push(j); 
 				break;
 			}
@@ -68,7 +75,12 @@ public class serverUtil {
 		}
 	//return aux;		
 	}
-	
+	public static void pinClear(Stack<Integer> aux1,Stack<Integer> aux2,Stack<Integer> aux3) {
+		aux1.clear();
+		aux2.clear();
+		aux3.clear();
+		
+	}
 	public static Boolean waitRoutine(DataInputStream dataIn, DataOutputStream dataOut) throws IOException{
 		
 		boolean waiting = true;	

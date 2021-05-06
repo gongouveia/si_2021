@@ -44,9 +44,7 @@ public class server
 		//base de cada torre. Com este desenhamos um base da stack pois nunca pode haver troca 
 		//de valores da base entre as bases. Com este metodo conseguimos com que as Stacks nunca fiquem vazias
 
-		aux1.push(1000);
-		aux2.push(1000);
-		aux3.push(1000);
+	
 
 
 		int disk = 0;    //número de discos usados durante o jogo 
@@ -69,8 +67,6 @@ public class server
 		boolean waiting = true;
 		
 		
-		
-		
 		System.out.println("Waiting for client.");
 		Socket s1 = s.accept(); 
 		System.out.println("Server connected.");// Wait and accept a connection
@@ -78,6 +74,9 @@ public class server
 		DataOutputStream dataOut = new DataOutputStream(out);
 		InputStream in = s1.getInputStream(); 						// Fornece um input stream para este socket
 		DataInputStream dataIn = new DataInputStream(in);
+		// Get a stream associated with the socket
+		
+		
 
 
 
@@ -85,7 +84,8 @@ public class server
 		//LOOP para perguntar ao cliente se quer conectar ao server ou nao
 		while (waiting) {
 			
-			// Get a stream associated with the socket
+			
+			
 			dataOut.writeUTF("INIT");
 			
 			String request = dataIn.readUTF(); // Usa o DataInputStream para ler a string enviada pelo cliente
@@ -116,6 +116,7 @@ public class server
 
 
 
+			
 			String login = dataIn.readUTF();
 			String pass = dataIn.readUTF();
 
@@ -144,6 +145,7 @@ public class server
 
 
 				//serverUtil.optionsMenu();
+				dataOut.writeUTF("COUNTER");
 				dataOut.writeUTF("DRAW");
 				dataOut.writeUTF("PLAY");
 				String switchoption = dataIn.readUTF();
@@ -175,7 +177,7 @@ public class server
 					break;
 
 				case "5":
-					System.out.println("bruh5");
+					
 					counter = serverUtil.diskXange(switchoption, dataOut, aux3,aux1, counter);    //5:C-->A
 					
 					break;
@@ -230,30 +232,50 @@ public class server
 
 				if (finalTowerSize == disk+1)   {
 					System.out.println("roundOver");
-
+					serverUtil.pinClear(aux1, aux2, aux3);
+					dataOut.writeUTF("PIN_CLEAR");
+					
 					dataOut.writeUTF("END_GAME");
-					dataOut.writeUTF(" Game solved with sucess *\nProblem solved in "+ counter + " attemps\nCould be solved in " + solve +" attemps");
-
-
-					//serverUtil.displayMenu();
 					displayaux = dataIn.readUTF();
+
 
 					switch (displayaux) {
 
 					case "OPTION1" :
 						System.out.println("optio1selected");
+						selectedPin = serverUtil.intPinVerifier(dataIn, dataOut);
+						
+						
+						//pede ao cliente o número de discos
+						disk = serverUtil.diskNumberPick(dataIn, dataOut, disk);
+						
+						solve = (int)Math.pow(2,disk)-1; 
+						
+						
+
+						
+						dataOut.writeUTF("GAME_STARTED");
+						serverUtil.pinFiller(disk,selectedPin[0], aux1, aux2, aux3);
+						dataOut.writeUTF("PIN_FILLER");
+						
 						endGame = false;
 						break;
 
 					case "OPTION2":
 						System.out.println("optio2selected");
-						//System.out.println(serverUtil.showResults(dataScores));
 						endGame = false;
 						break;
 
 					case "OPTIONQ":
 						System.out.println("optioQselected");
 						endGame = true;
+						
+						dataIn.close();
+						dataOut.close();
+						in.close();
+						out.close();
+						s1.close();
+
 						break;
 
 					default:  //adicionar uma merda qq

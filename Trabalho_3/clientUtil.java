@@ -48,19 +48,25 @@ public class clientUtil {
 	public static void pinFiller(int disk,int initialpin,Stack<Integer> aux1,Stack<Integer> aux2,Stack<Integer> aux3) {
 		//passar o void para Stack<Integer>
 		//Stack<Integer> aux = aux1;  //neste momento todas as stacks são iguais 
-			for (int j = disk; j >= 1; j--) {
+		aux1.push(1000);
+		aux2.push(1000);
+		aux3.push(1000);
+		for (int j = disk; j >= 1; j--) {
 				
 				switch (initialpin) {
 			
 				case 1 :
+					
 					aux1.push(j); 
 					break;
 			
 				case 2:
+					
 					aux2.push(j); 
 					break;
 			
 				case 3:
+					
 					aux3.push(j); 
 					break;
 				}
@@ -69,6 +75,12 @@ public class clientUtil {
 		//return aux;		
 		}
 
+	public static void pinClear(Stack<Integer> aux1,Stack<Integer> aux2,Stack<Integer> aux3) {
+		aux1.clear();
+		aux2.clear();
+		aux3.clear();
+		
+	}
 
 	public static void draw(int disk, Stack<Integer> towerOne, Stack<Integer> towerTwo, Stack<Integer> towerThree) {
 
@@ -305,7 +317,8 @@ public class clientUtil {
 		String endstring="";	
 		for (int i=3; i<11;i++){
 			if (dataScores.get(i)[1]>=0){
-				endstring += displayStat(dataScores.get(i)[0],dataScores.get(i)[1],i)+"\n";  //{number of times played,total score,number of disks}  
+				endstring += displayStat(dataScores.get(i)[0],dataScores.get(i)[1],i)+"\n"; 
+				//{number of times played,total score,number of disks}  
 			}	
 
 		}

@@ -14,8 +14,10 @@ import java.util.HashMap;
 public class Client { 																// CLIENTE
 
 	public static void main(String args[]) throws IOException {
+		
+		
 		Socket socket = new Socket("localhost", 1234); 					// Abrir conexão com o servidor, na ponte 7000
-
+		
 		InputStream in = socket.getInputStream();
 		DataInputStream dataIn = new DataInputStream(in);
 		OutputStream out = socket.getOutputStream();
@@ -27,14 +29,9 @@ public class Client { 																// CLIENTE
 		Stack<Integer> StackTwo = new Stack<Integer>();      //stack intermedia
 		Stack<Integer> StackThree = new Stack<Integer>();      //stack esquerda	
 		
-		StackOne.push(1000);
-		StackTwo.push(1000);
-		StackThree.push(1000);
+
 		
-		Stack<Stack<Integer>> stackArray = new Stack<Stack<Integer>>();
-		stackArray.push(StackOne);
-		stackArray.push(StackTwo);
-		stackArray.push(StackThree);
+		
 		
 		gameStart();
 		int disk = 3;
@@ -184,22 +181,22 @@ public class Client { 																// CLIENTE
 			case "MOVE_DISK":
 				String move = dataIn.readUTF();
 				switch(move) {
-					case"AB":
+					case"1":
 						clientUtil.diskXange(StackOne, StackTwo);
 						break;
-					case"AC":
+					case"2":
 						clientUtil.diskXange(StackOne, StackThree);
 						break;
-					case"BA":
+					case"3":
 						clientUtil.diskXange(StackTwo, StackOne);
 						break;
-					case"BC":
+					case"4":
 						clientUtil.diskXange(StackTwo, StackThree);
 						break;
-					case"CA":
+					case"5":
 						clientUtil.diskXange(StackThree, StackOne);
 						break;
-					case"CB":
+					case"6":
 						clientUtil.diskXange(StackThree, StackTwo);
 						break;
 					case "MOVE_ERROR":
@@ -209,6 +206,9 @@ public class Client { 																// CLIENTE
 				
 				break;
 				
+			case "COUNTER":
+				System.out.println("Round: "  );
+				break;
 			case "NO_TRY":
 
 				System.out.println("Server doesn't want to connect");
@@ -226,12 +226,15 @@ public class Client { 																// CLIENTE
 				displayMenu();
 				break;
 				
+			case "PIN_CLEAR":
+				clientUtil.pinClear(StackOne, StackTwo, StackThree);;
+				break;
 				
 				
 			case "END_GAME":
-				dataIn.readUTF();
-				System.out.println(dataIn.readUTF());
+								
 				displayMenu();
+				
 				String menuoption= sc.nextLine();
 				
 				switch (menuoption){
@@ -241,22 +244,30 @@ public class Client { 																// CLIENTE
 					
 				case "2":
 					dataOut.writeUTF("OPTION2");
+					clientUtil.showResults(null);
 					break;
 					
 				case"Q":
 					dataOut.writeUTF("OPTIONQ");
+					dataIn.close();
+					dataOut.close();
+					in.close();
+					out.close();
+					socket.close();
+					//para impedir voltar ao inicio do primeiro loop
+					acabarJogo = false;
 					break;
 					
 				
 				}
 				
 				
-				
+				break;
 			default:
 				break;
 
 			}
-
+		
 		}
 
 	}
