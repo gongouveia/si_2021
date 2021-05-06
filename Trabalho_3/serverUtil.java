@@ -18,7 +18,7 @@ public class serverUtil {
 	
 	
 
-	public static int diskXange ( DataOutputStream dataOut, Stack<Integer> a ,Stack<Integer> b, int movement) throws IOException {
+	public static int diskXange (String move, DataOutputStream dataOut, Stack<Integer> a ,Stack<Integer> b, int movement) throws IOException {
 
 		
 		int var;
@@ -32,6 +32,7 @@ public class serverUtil {
 		else {  //se possivel executar passar os discos da torre, o ultimo disco é extraido da stack1 e colocado na stack 2
 			var = a.pop(); b.push(var);
 			movement ++; //o counter so é incrementado, se existir movimento de discos
+			dataOut.writeUTF(move);
 			System.out.println("Accepted move.");
 		}
 		return movement; // o counter é igualado ao movement 

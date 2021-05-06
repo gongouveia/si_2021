@@ -202,17 +202,16 @@ public class Client { 																// CLIENTE
 					case"CB":
 						clientUtil.diskXange(StackThree, StackTwo);
 						break;
-					case"":
-						break;
-					default:
+					case "MOVE_ERROR":
+						System.out.println("You moved is not allowed. Play again.");
 						break;
 				}
+				
 				break;
-			case "MOVE_ERROR":
-				System.out.println("You moved is not allowed. Play again.");
+				
 			case "NO_TRY":
 
-				System.out.println("Client doesn't want to connect");
+				System.out.println("Server doesn't want to connect");
 				//invalid = false;
 				break;
 

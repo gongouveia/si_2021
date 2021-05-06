@@ -120,6 +120,7 @@ public class server
 			String pass = dataIn.readUTF();
 
 
+			
 			//serverUtil.credentialValidator(credentials, login,  pass);  //true se for invalido
 
 			
@@ -154,34 +155,34 @@ public class server
 				//além disso, um movimento so é contado, se existir movimento de discos entre pirâmides
 				case "1":
 					
-					counter = serverUtil.diskXange(dataOut, aux1,aux2, counter);    //1:A-->B
-					dataOut.writeUTF("AB");
+					counter = serverUtil.diskXange(switchoption, dataOut, aux1,aux2, counter);    //1:A-->B
+					
 					break;
 
 				case "2":
-					counter = serverUtil.diskXange(dataOut, aux1,aux3, counter);    //2:A-->C
-					dataOut.writeUTF("AC");
+					counter = serverUtil.diskXange(switchoption, dataOut, aux1,aux3, counter);    //2:A-->C
+					
 					break;
 
 				case "3":
-					counter = serverUtil.diskXange(dataOut, aux2,aux1, counter);    //3:B-->A
-					dataOut.writeUTF("BA");
+					counter = serverUtil.diskXange(switchoption, dataOut, aux2,aux1, counter);    //3:B-->A
+					
 					break;
 
 				case "4":
-					counter = serverUtil.diskXange(dataOut, aux2,aux3, counter);    //4:B-->C
-					dataOut.writeUTF("BC");
+					counter = serverUtil.diskXange(switchoption, dataOut, aux2,aux3, counter);    //4:B-->C
+					
 					break;
 
 				case "5":
 					System.out.println("bruh5");
-					counter = serverUtil.diskXange(dataOut, aux3,aux1, counter);    //5:C-->A
-					dataOut.writeUTF("CA");
+					counter = serverUtil.diskXange(switchoption, dataOut, aux3,aux1, counter);    //5:C-->A
+					
 					break;
 
 				case "6":
-					counter = serverUtil.diskXange(dataOut, aux3,aux2, counter);	 //6:C-->B
-					dataOut.writeUTF("CB");
+					counter = serverUtil.diskXange(switchoption, dataOut, aux3,aux2, counter);	 //6:C-->B
+
 					break;
 
 				case "":
