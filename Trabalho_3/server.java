@@ -18,19 +18,7 @@ public class server
 
 		
 		int counter = 0; // regista o numero de passos até resolver o puzzle
-
-		HashMap<Integer, Integer[]> dataScores = new HashMap<Integer, Integer[]>();
-
-		for (int i=3; i<11;i++){
-			dataScores.put(i, new Integer[] {0, 0, i});
-		}
-
-
-
-
-
-		Scanner sc = new Scanner(System.in);
-
+		
 		//Recepção ao jogador
 
 
@@ -56,27 +44,19 @@ public class server
 		int size2 = 0;
 		int size3 = 0;
 
-		String option; // Input de jogadas ao longo do program
-		String displayaux;
-		int initialTowerSize =0;
+		
 		int finalTowerSize =0;
 		
 		
 		HashMap<String, String> credentials = new HashMap<String, String>();
-		boolean incorrectcredentials = true;
+		
+		Stack<Stack<Integer>> scores = new Stack<Stack<Integer>>();
+		credentials.put("user","123");
+		
 		boolean waiting = true;
 		boolean closeGame = false;
-		
-		
-		
-		// Get a stream associated with the socket
-		
-		
 
 
-
-		
-		
 		//LOOP para perguntar ao cliente se quer conectar ao server ou nao
 		while (waiting) {
 			
@@ -89,34 +69,28 @@ public class server
 			DataInputStream dataIn = new DataInputStream(in);
 			DataOutputStream dataOut = new DataOutputStream(out);
 			
-			dataOut.writeUTF("INIT");
+			boolean endGame = false;
+			
 			dataOut.writeUTF("LOGIN");
 			
-			String login = dataIn .readUTF();
-			String pass = dataIn.readUTF();
-			
-			
-			
-			String request = dataIn.readUTF(); // Usa o DataInputStream para ler a string enviada pelo cliente
-			
+			endGame = serverUtil.credentialValidator(s1,in, out, credentials,s,dataOut,dataIn, endGame);
 			
 
-			
-			//serverUtil.credentialValidator(credentials, login,  pass);  //true se for invalido
-
-			
-
-			
-		
-			
 			//pede ao cliente o número de discos
 			
+			int[] arrayGame = new int[4];
 			
+			if(!endGame) {
 			
-			
-			int[] arrayGame = serverUtil.newGame(disk, dataIn, dataOut, aux1, aux2, aux3);
+				arrayGame = serverUtil.newGame(disk, dataIn, dataOut, aux1, aux2, aux3);
 
-			boolean endGame = false;
+			} else {
+				arrayGame[0] = 0;
+				arrayGame[1] = 0;
+				arrayGame[2] = 0;
+				arrayGame[3] = 0;
+				
+			}
 			
 			
 			while(!endGame) {
@@ -126,7 +100,7 @@ public class server
 			
 				
 				//serverUtil.optionsMenu();
-				dataOut.writeUTF("COUNTER");
+				dataOut.writeUTF("COUNTER_PRINT");
 				dataOut.writeUTF("DRAW");
 				dataOut.writeUTF("PLAY");
 				String switchoption = dataIn.readUTF();
@@ -220,6 +194,11 @@ public class server
 
 				if (finalTowerSize == disk+1 || closeGame)   {
 					closeGame = false;
+					
+					if (finalTowerSize == disk+1) {
+						dataOut.writeUTF("WIN");
+					}
+					
 					System.out.println("Round Over.");
 					
 					

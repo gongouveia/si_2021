@@ -8,6 +8,7 @@ public class clientUtil {
 
 
 	}
+	
 	public static void welcome() {
 		System.out.println("*".repeat(25));
 		System.out.println("* Welcome to Hanoi Tower *");
@@ -307,9 +308,12 @@ public class clientUtil {
 
 	}
 
-	public static String displayMenu() { 
-
-		return ( "---------Select and Option----------\n 1-Play \n 2-See stats \n Q-Stop");  
+	public static void displayMenu() { 
+		System.out.println("---------Select and Option----------\n");
+		System.out.println("1-Play");
+		System.out.println("2-See stats");
+		System.out.println("Q-Stop");
+		
 	}
 	
 	public static String showResults(HashMap<Integer, Integer[]> dataScores){

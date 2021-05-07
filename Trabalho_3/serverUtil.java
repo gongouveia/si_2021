@@ -8,7 +8,6 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
-import java.util.Scanner;
 import java.util.Stack;
 
 public class serverUtil {
@@ -16,7 +15,63 @@ public class serverUtil {
 
 	
 	
-	
+	public static boolean credentialValidator(Socket s1, InputStream in, OutputStream out,HashMap<String, String> credentials,ServerSocket s, DataOutputStream dataOut,DataInputStream dataIn,boolean endGame) throws IOException {
+			
+			boolean validate = false;
+			
+			while(!validate) {
+				String name = dataIn.readUTF();
+				String pass = dataIn.readUTF();
+			
+			
+				for (String i : credentials.keySet())
+				{	
+					
+					
+					if (name.equals(i) & pass.equals(credentials.get(i))) {			
+						validate=true;
+						break;
+					}
+				}
+				
+				System.out.println("Credentials validation: " + validate);
+				
+				if (validate) {
+					System.out.println("Login Valid.");
+					dataOut.writeUTF("VALID_CREDENTIAL");
+					endGame = false;
+					
+				} else {
+					System.out.println("Login Invalid.");
+					dataOut.writeUTF("INVALID_CREDENTIAL");
+		
+					String option;
+					
+					while(true) {
+						option = dataIn.readUTF().toUpperCase();
+						if(option.equals("N")) {
+							endGame = true;
+							validate = true;
+							dataOut.writeUTF("CLOSE_CLIENT");
+							dataOut.close();
+							dataIn.close();
+							in.close();
+							out.close();
+							s1.close();
+							break;
+							
+						} else if (option.equals("Y")) {
+							dataOut.writeUTF("LOGIN");
+							break;
+						}	else {
+							dataOut.writeUTF("INVALID_CREDENTIAL");
+						}
+					}
+					
+				}
+			}
+			return endGame;
+	}
 
 	public static int diskXange (String move, DataOutputStream dataOut, Stack<Integer> a ,Stack<Integer> b, int movement) throws IOException {
 
@@ -34,6 +89,7 @@ public class serverUtil {
 			movement ++; //o counter so é incrementado, se existir movimento de discos
 			dataOut.writeUTF(move);
 			System.out.println("Accepted move.");
+			dataOut.writeUTF("COUNTER_ADD");
 		}
 		return movement; // o counter é igualado ao movement 
 	
@@ -46,6 +102,7 @@ public class serverUtil {
 		
 		dataOut.writeUTF("PIN_CLEAR");
 		dataOut.writeUTF("GAME_STARTED");
+		pinClear(aux1, aux2, aux3);
 		disk = diskNumberPick(dataIn, dataOut, disk);
 		int[] pinArray = intPinVerifier(dataIn, dataOut);
 		
@@ -53,36 +110,39 @@ public class serverUtil {
 		pinFiller(disk, pinArray[0], aux1, aux2, aux3);
 		
 		int solve = (int)Math.pow(2,disk)-1; 
-		
+		dataOut.writeUTF("COUNTER_RESET");
 		return new int [] {pinArray[0], pinArray[1], disk, solve};
 	}
 	
 	public static boolean menu(DataInputStream dataIn, DataOutputStream dataOut, boolean endGame)  throws IOException {
-		
-		dataOut.writeUTF("MENU");
-		String displayaux = dataIn.readUTF();
-
-
-		switch (displayaux) {
-
-			case "OPTION1" :
-				System.out.println("New game starting.");
-				
-				
-				endGame = false;
-				break;
-
-			case "OPTION2":
-				System.out.println("Stats showing.");
-				endGame = false;
-				break;
-
-			case "OPTIONQ":
-				System.out.println("Exit from game.");
-				endGame = true;
-				break;
-
+		boolean menuOut = false;
+		while(!menuOut) {
+			dataOut.writeUTF("MENU");
+			String displayaux = dataIn.readUTF();
+			
+			
+			
+			switch (displayaux) {
+	
+				case "OPTION1" :
+					System.out.println("New game starting.");
 					
+					menuOut = true;
+					endGame = false;
+					break;
+	
+				case "OPTION2":
+					System.out.println("Stats showing.");
+					break;
+	
+				case "OPTIONQ":
+					System.out.println("Exit from game.");
+					menuOut = true;
+					endGame = true;
+					break;
+	
+						
+			}
 		}
 		return endGame;
 	}
@@ -156,32 +216,7 @@ public class serverUtil {
 	}
 	
 	
-	public static boolean credentialValidator(HashMap<String, String> credentials, String login, String pass) throws IOException {
-		
-		boolean incorrectcredentials = false;
-		ServerSocket s = new ServerSocket(1234);
-		Socket s1 = s.accept(); 									// Wait and accept a connection
-		// Get a stream associated with the socket
-		OutputStream out = s1.getOutputStream();
-		DataOutputStream dataOut = new DataOutputStream(out);
-
-		
-		
-		for (String i : credentials.keySet())
-		{
-			if ((login.equalsIgnoreCase(i) && pass.equalsIgnoreCase(credentials.get(i)))) 
-			{
-				// JOGAR
-				dataOut.writeUTF("Incorrect Login");
-				System.out.println("\nIncorrect Login");
-				incorrectcredentials = false;
-			}
-		}	
-		
-		return incorrectcredentials;
-		
-		
-	}
+	
 
 public static int[] intPinVerifier(DataInputStream dataIn, DataOutputStream dataOut) throws IOException {  //verifica se o ultmimo é igual ao inicial
 		
