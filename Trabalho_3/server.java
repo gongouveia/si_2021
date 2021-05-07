@@ -16,6 +16,7 @@ public class server
 		ServerSocket s = new ServerSocket(1234);
 
 
+		
 		int counter = 0; // regista o numero de passos até resolver o puzzle
 
 		HashMap<Integer, Integer[]> dataScores = new HashMap<Integer, Integer[]>();
@@ -51,7 +52,6 @@ public class server
 		
 		//int counter = 0; // regista o numero de passos até resolver o puzzle
 
-		int solve;       //regista o numero de tentaivas minimo para resolver o jogo
 		int size1 = 0;   //inicializa o tamanho de cada um dos stacks
 		int size2 = 0;
 		int size3 = 0;
@@ -65,15 +65,10 @@ public class server
 		HashMap<String, String> credentials = new HashMap<String, String>();
 		boolean incorrectcredentials = true;
 		boolean waiting = true;
+		boolean closeGame = false;
 		
 		
-		System.out.println("Waiting for client.");
-		Socket s1 = s.accept(); 
-		System.out.println("Server connected.");// Wait and accept a connection
-		OutputStream out = s1.getOutputStream();
-		DataOutputStream dataOut = new DataOutputStream(out);
-		InputStream in = s1.getInputStream(); 						// Fornece um input stream para este socket
-		DataInputStream dataIn = new DataInputStream(in);
+		
 		// Get a stream associated with the socket
 		
 		
@@ -81,69 +76,55 @@ public class server
 
 
 		
+		
 		//LOOP para perguntar ao cliente se quer conectar ao server ou nao
 		while (waiting) {
 			
+			System.out.println("Waiting for client.");
+			Socket s1 = s .accept();
 			
+			System.out.println("Server connected.");
+			InputStream in = s1.getInputStream();
+			OutputStream out = s1.getOutputStream();
+			DataInputStream dataIn = new DataInputStream(in);
+			DataOutputStream dataOut = new DataOutputStream(out);
 			
 			dataOut.writeUTF("INIT");
+			dataOut.writeUTF("LOGIN");
+			
+			String login = dataIn .readUTF();
+			String pass = dataIn.readUTF();
+			
+			
 			
 			String request = dataIn.readUTF(); // Usa o DataInputStream para ler a string enviada pelo cliente
 			
-			if (request.equalsIgnoreCase("Y")) 
-			{
-				dataOut.writeUTF("LOGIN");
-				System.out.println("client to play");
-				waiting = false;
-			} 
-			else if (request.equalsIgnoreCase("N"))
-			{
-				dataOut.writeUTF("NO_TRY");
-				System.out.println("client doesn't want to play");
-				
-			} 
-			else 
-			{
-				dataOut.writeUTF("INVALID_COMAND");
-			}
-		
-			dataOut.flush();
-			System.out.println("client answered");
-			s.close();
-		}
-
 			
-
-
-
-			
-			String login = dataIn.readUTF();
-			String pass = dataIn.readUTF();
-
 
 			
 			//serverUtil.credentialValidator(credentials, login,  pass);  //true se for invalido
 
 			
 
-			int[] selectedPin = serverUtil.intPinVerifier(dataIn, dataOut);
+			
 		
 			
 			//pede ao cliente o número de discos
-			disk = serverUtil.diskNumberPick(dataIn, dataOut, disk);
-			
-			solve = (int)Math.pow(2,disk)-1; 
 			
 			
+			
+			
+			int[] arrayGame = serverUtil.newGame(disk, dataIn, dataOut, aux1, aux2, aux3);
 
 			boolean endGame = false;
-			dataOut.writeUTF("GAME_STARTED");
-			serverUtil.pinFiller(disk,selectedPin[0], aux1, aux2, aux3);
-			dataOut.writeUTF("PIN_FILLER");
+			
 			
 			while(!endGame) {
-
-
+				disk = arrayGame[2];
+				int towerFinish =  arrayGame[1];
+				
+			
+				
 				//serverUtil.optionsMenu();
 				dataOut.writeUTF("COUNTER");
 				dataOut.writeUTF("DRAW");
@@ -153,7 +134,7 @@ public class server
 				
 				dataOut.writeUTF("MOVE_DISK");
 
-				switch (switchoption) {       //implementamos este switch para avaliar cada um dos inputs do ultilizador
+				switch (switchoption.toUpperCase()) {       //implementamos este switch para avaliar cada um dos inputs do ultilizador
 				//além disso, um movimento so é contado, se existir movimento de discos entre pirâmides
 				case "1":
 					
@@ -190,10 +171,17 @@ public class server
 				case "":
 					// movimento vazio é ignorado
 					break;
+				case "Y":
+					// movimento vazio é ignorado
+					dataOut.writeUTF("Y");
+					System.out.println("Client requested to close current game.");
+					closeGame = true;
+					break;
 
 				default:                      //qualquer outro input do 
-					//serverUtil.errorDraw();   			  //mensagem de erro
-					dataOut.writeUTF("ERROR");
+					 			  //mensagem de erro
+					System.out.println("Default error input.");
+					dataOut.writeUTF("default");
 					break;
 
 				}
@@ -215,7 +203,7 @@ public class server
 				//ou seja quando o pin final tiver todas as peças e o pin inicial apenas uma
 					
 
-				switch(selectedPin[1]) {
+				switch(towerFinish) {
 
 					case 1:
 						finalTowerSize=size1;
@@ -230,59 +218,22 @@ public class server
 
 
 
-				if (finalTowerSize == disk+1)   {
-					System.out.println("roundOver");
-					serverUtil.pinClear(aux1, aux2, aux3);
-					dataOut.writeUTF("PIN_CLEAR");
+				if (finalTowerSize == disk+1 || closeGame)   {
+					closeGame = false;
+					System.out.println("Round Over.");
 					
-					dataOut.writeUTF("END_GAME");
-					displayaux = dataIn.readUTF();
-
-
-					switch (displayaux) {
-
-					case "OPTION1" :
-						System.out.println("optio1selected");
-						selectedPin = serverUtil.intPinVerifier(dataIn, dataOut);
-						
-						
-						//pede ao cliente o número de discos
-						disk = serverUtil.diskNumberPick(dataIn, dataOut, disk);
-						
-						solve = (int)Math.pow(2,disk)-1; 
-						
-						
-
-						
-						dataOut.writeUTF("GAME_STARTED");
-						serverUtil.pinFiller(disk,selectedPin[0], aux1, aux2, aux3);
-						dataOut.writeUTF("PIN_FILLER");
-						
-						endGame = false;
-						break;
-
-					case "OPTION2":
-						System.out.println("optio2selected");
-						endGame = false;
-						break;
-
-					case "OPTIONQ":
-						System.out.println("optioQselected");
-						endGame = true;
-						
+					
+					endGame = serverUtil.menu(dataIn, dataOut, endGame);
+					
+					
+					if(!endGame) {
+						arrayGame = serverUtil.newGame(disk, dataIn, dataOut, aux1, aux2, aux3);
+					} else {
 						dataIn.close();
 						dataOut.close();
 						in.close();
 						out.close();
 						s1.close();
-
-						break;
-
-					default:  //adicionar uma merda qq
-
-						break;
-
-
 					}
 				}
 
@@ -296,6 +247,6 @@ public class server
 
 	}
 
-
+}
 
 

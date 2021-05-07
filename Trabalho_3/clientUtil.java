@@ -31,7 +31,7 @@ public class clientUtil {
 		System.out.println("4:B-->C");
 		System.out.println("5:C-->A");
 		System.out.println("6:C-->B");
-		System.out.println("Press Y to Exit.");
+		System.out.println("Press Y to end game.");
 
 		//return "1:A-->B\n2:A-->C\n3:B-->A\n4:B-->C\n5:C-->A\n6:C-->B\nPress Y to Exit.";
 

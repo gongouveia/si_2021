@@ -42,9 +42,50 @@ public class serverUtil {
 	
 
 	
-
+	public static int[] newGame(int disk, DataInputStream dataIn, DataOutputStream dataOut, Stack<Integer> aux1,Stack<Integer> aux2,Stack<Integer> aux3)throws IOException {
+		
+		dataOut.writeUTF("PIN_CLEAR");
+		dataOut.writeUTF("GAME_STARTED");
+		disk = diskNumberPick(dataIn, dataOut, disk);
+		int[] pinArray = intPinVerifier(dataIn, dataOut);
+		
+		dataOut.writeUTF("PIN_FILLER");
+		pinFiller(disk, pinArray[0], aux1, aux2, aux3);
+		
+		int solve = (int)Math.pow(2,disk)-1; 
+		
+		return new int [] {pinArray[0], pinArray[1], disk, solve};
+	}
 	
+	public static boolean menu(DataInputStream dataIn, DataOutputStream dataOut, boolean endGame)  throws IOException {
+		
+		dataOut.writeUTF("MENU");
+		String displayaux = dataIn.readUTF();
 
+
+		switch (displayaux) {
+
+			case "OPTION1" :
+				System.out.println("New game starting.");
+				
+				
+				endGame = false;
+				break;
+
+			case "OPTION2":
+				System.out.println("Stats showing.");
+				endGame = false;
+				break;
+
+			case "OPTIONQ":
+				System.out.println("Exit from game.");
+				endGame = true;
+				break;
+
+					
+		}
+		return endGame;
+	}
 	public static void pinFiller(int disk,int initialpin,Stack<Integer> aux1,Stack<Integer> aux2,Stack<Integer> aux3) {
 	//passar o void para Stack<Integer>
 	//Stack<Integer> aux = aux1;  //neste momento todas as stacks são iguais 
@@ -81,6 +122,8 @@ public class serverUtil {
 		aux3.clear();
 		
 	}
+	
+	
 	public static Boolean waitRoutine(DataInputStream dataIn, DataOutputStream dataOut) throws IOException{
 		
 		boolean waiting = true;	
@@ -168,11 +211,13 @@ public static int[] intPinVerifier(DataInputStream dataIn, DataOutputStream data
 
 				} else {
 					dataOut.writeUTF("PIN_ERROR");
+					System.out.println("Invalid pin number.");
 					dataOut.writeUTF("PIN_VERIFIER");
 				}
 				
 			} catch(Exception e) {
 				dataOut.writeUTF("PIN_INVALID_NUMBER");
+				System.out.println("Invalid input number for pin.");
 				dataOut.writeUTF("PIN_VERIFIER");
 			}
 			
@@ -196,7 +241,7 @@ public static int[] intPinVerifier(DataInputStream dataIn, DataOutputStream data
 			
 			try {
 				disk = Integer.parseInt(diskString);
-				System.out.println(disk >= diskMin && disk <= diskMax);
+				
 				if(disk >= diskMin && disk <= diskMax) {
 					diskCheck = true;
 					dataOut.writeUTF("DISKS_ACCEPTED");

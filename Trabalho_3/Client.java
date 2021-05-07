@@ -36,6 +36,7 @@ public class Client { 																// CLIENTE
 		gameStart();
 		int disk = 3;
 		int initPin = 1;
+		
 		while (acabarJogo) {
 
 			Scanner sc = new Scanner(System.in);
@@ -202,6 +203,12 @@ public class Client { 																// CLIENTE
 					case "MOVE_ERROR":
 						System.out.println("You moved is not allowed. Play again.");
 						break;
+					case "Y":
+						System.out.println("You exited from the current game.");
+						break;
+					default:
+						System.out.println("Play again. Select a number between 1 and 6.");
+						break;
 				}
 				
 				break;
@@ -221,21 +228,16 @@ public class Client { 																// CLIENTE
 				break;
 
 				
-				
-			case "MENU":
-				displayMenu();
-				break;
-				
 			case "PIN_CLEAR":
 				clientUtil.pinClear(StackOne, StackTwo, StackThree);;
 				break;
 				
 				
-			case "END_GAME":
+			case "MENU":
 								
 				displayMenu();
 				
-				String menuoption= sc.nextLine();
+				String menuoption= sc.nextLine().toUpperCase();
 				
 				switch (menuoption){
 				case "1":
