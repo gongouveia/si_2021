@@ -199,42 +199,45 @@ public class Client { 																// CLIENTE
 						}
 						
 						break;
-						//erro de protocolo
+						//erro de protocolo quando ha uma falha de conexão
 					case "PROTOCOL_ERROR":
-		
 						System.out.println("Connection timed out");
 						acabarJogo=false;
 						break;
 
 					
 					case "DISK_NUMBER":
+						//é pedido o numero de disocs do jofo	
 						System.out.println("* Insert number of disks between 3 and 10 to continue: ");
 						String diskNumber = sc.nextLine();
 						dataOut.writeUTF(diskNumber);
 						
 						switch(dataIn.readUTF()) {
 							case "DISKS_ACCEPTED":
+								//no caso do input do utilizador ser verificado pelo server como valido
 								System.out.println("You picked " + diskNumber + " disks");
 								disk  = Integer.parseInt(diskNumber);
-								
+								//depois de optar por um disco as estatisticas dão update
 								int[] replace2 = {dataScores.get(disk)[0]+1, dataScores.get(disk)[1],disk};
 								dataScores.put(disk, replace2);
-								
+								//valor teorico de jogadas minimas para reoslver o jogo para um dado numero de discos
 								solve = (int)Math.pow(2,disk)-1;
 								break;
 								
 							case "DISKS_DECLINED":
+								//no caso de ser invaldio o input do utilizador
 								System.out.println("Please select a number between 3 and 10.");
 								break;
 								
 							case "DISKS_DECLINED_ERROR":
+								//no caso de  o input do utilizador seja um inteiro
 								System.out.println("Please insert a number.");
 								break;
 						}
 						break;
 						
 					case "PIN_VERIFIER":
-		
+						
 						System.out.println("* Insert initial pin: \n 1-Pin A \n 2-Pin B \n 3-Pin C ");
 						String initialpin = sc.nextLine();
 						dataOut.writeUTF(initialpin);
@@ -245,16 +248,18 @@ public class Client { 																// CLIENTE
 						
 						switch(dataIn.readUTF()) {
 						case "PIN_SELECTED":
-				
+							//se o servidor verifica os pins continau o programa
 							initPin = Integer.parseInt(initialpin);
 							endPin = Integer.parseInt(finalpin);
 							break;
 							
 						case "PIN_ERROR":
+							//o servidor náo aceita o input do cliente
 							System.out.println("Please select a number between 1 and 3.");
 							break;
 							
 						case "PIN_INVALID_NUMBER":
+							//quando o cliente envia ao servidor um input inavlido
 							System.out.println("Please insert a number.");
 							break;
 					}
@@ -262,22 +267,23 @@ public class Client { 																// CLIENTE
 						break;
 					case "GAME_STARTED":
 						clientUtil.welcome();
-						
 						break;
 						
 					case "PIN_FILLER":
-						
+						//coloca os discos na STack incial
 						clientUtil.pinFiller(disk,initPin, StackOne, StackTwo, StackThree);
-						
 						break;
 						
 					case "PLAY":
+						//Mostra as opções 
 						clientUtil.playOptions();
 						String play = sc.nextLine();
 						dataOut.writeUTF(play);
 						break;
 						
 					case "MOVE_DISK":
+						//se o servidor aceita a opção do cliente então localemnte o clienet move os discos 
+						//lê a resposta do servidor 
 						String move = dataIn.readUTF();
 						switch(move) {
 							case"1":
@@ -312,35 +318,40 @@ public class Client { 																// CLIENTE
 						break;
 						
 					case "COUNTER_PRINT":
+						//print do nuemro de rondas
 						System.out.println("Round: "  + counter);
 						break;
 						
 					case "COUNTER_ADD":
+						//aumenta o contador
 						counter++;
 						break;
 						
 					case "COUNTER_RESET":
+						//da reset ao codigo
 						counter = 1;
 						break;
 					case "NO_TRY":
-		
 						System.out.println("Server doesn't want to connect");
 						//invalid = false;
 						break;
 		
 					case "DRAW":
+						//desenha o tabuleiro
 						System.out.println("Final pin: " + endPin);
 						clientUtil.draw(disk, StackOne, StackTwo, StackThree);    
 						break;
 		
 						
 					case "PIN_CLEAR":
+						//da reset as stacks 
 						clientUtil.pinClear(StackOne, StackTwo, StackThree);;
 						break;
 						
 					case "WIN":
+						//quando ganha 
 						int counterAdd = counter + dataScores.get(disk)[1];
-						
+						//da update dos scores 
 						int[] replace2 = {dataScores.get(disk)[0],counterAdd,disk};
 						dataScores.put(disk, replace2);
 						
@@ -350,36 +361,35 @@ public class Client { 																// CLIENTE
 						break;
 						
 					case "SCORE_CALC":
-						
-						
-						
 						int[] replace = {dataScores.get(disk)[0],dataScores.get(disk)[1], disk};
 						dataScores.put(disk, replace);
+						//da update das estatisicas na dataBase
 						dataBase.put(name, dataScores);
 						break;
 						
 					case "MENU":
-										
+						//mostra o menu de opções				
 						clientUtil.displayMenu();
 						
 						String menuoption= sc.nextLine().toUpperCase();
 						
 						switch (menuoption){
 							case "1":
+								//recebe a opção validada
 								dataOut.writeUTF("OPTION1");
 								break;
 								
 							case "2":
+								//recebe a opção validada
 								dataOut.writeUTF("OPTION2");
-
-								
-						
 								clientUtil.showResults(dataScores);
 								
 								
 								break;
 								
 							case"Q":
+								//deconecta do seridor
+								
 								dataOut.writeUTF("OPTIONQ");
 								dataIn.close();
 								dataOut.close();
@@ -391,6 +401,7 @@ public class Client { 																// CLIENTE
 								connect = true;
 								break;
 							default:
+								//qualquer outra opção enviada pelo cliente
 								dataOut.writeUTF("OPTIOND");
 								System.out.println("Select an accepted input. Select 1, 2 or Q.");
 								break;
@@ -401,6 +412,7 @@ public class Client { 																// CLIENTE
 						break;
 						
 					case"CLOSE_CLIENT":
+						//desconecta o cliente do servidor
 						dataIn.close();
 						dataOut.close();
 						in.close();
