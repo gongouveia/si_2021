@@ -135,7 +135,7 @@ public class Client { 																// CLIENTE
 							
 							for (int i=3; i<11;i++){
 								dataScores.put(i, new int[] {0, 0, i});
-								//System.out.println(dataScores.get(i)[2]);
+								
 							}
 							
 							dataBase.put(name, dataScores);
@@ -144,12 +144,7 @@ public class Client { 																// CLIENTE
 						}
 						
 						
-						/*for(int k = 3; k < dataScores.size() + 3 ; k++) {
-							for(int m = 0; m < 3; m++) {
-								System.out.println("fff");
-								System.out.println(dataScores.get(k)[m]);
-							}
-						}*/
+						
 						break;
 								
 					case "INVALID_CREDENTIAL":
