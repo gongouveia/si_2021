@@ -30,45 +30,55 @@ public class Client { 																// CLIENTE
 		//, interger[] = 
 		 * - numero de vezes que o disco foi escolhido
 		 * - rondas para um disco
-		 * - m�dia
+		 * - média
 		 * - disco, representa o disco
 		*/
 		
 		
 		
-		
+		//hashmap onde se guarda temporariamente os scores de um sessão de jogos
 		HashMap<Integer, int[]> dataScores = new HashMap<Integer, int[]>();
-		//{number of times played,total score,average,number of disks} 
-		
+		//Composição do array inicializado no hahsmap anterior{number of times played,total score,average,number of disks} 
+		// hashmap que contem os scores de todos os users, durante uma sessão do cliente.
 		HashMap<String, HashMap<Integer, int[]>> dataBase = new HashMap<String, HashMap<Integer, int[]>>();
 		
 		
 		
 		
 		
-		
+		//class scanner é inicializada para inputs
 		Scanner sc = new Scanner(System.in);
 		
 		
-		
+		//o usuário é bem vindo com uma mensagem
 		clientUtil.welcome();
+		//inicialização de variáveis essenciais para o funcionamento do jogo, os valores nao interessam por agora
+		//disco escolhido
 		int disk = 3;
+		//torre inicial escolhida
 		int initPin = 1;
+		//torre final escolhida
 		int endPin = 1;
+		//rondas num jogo
 		int counter = 1;
 		
 		String name = "bro";
-		
+		//boolean que fecha o cliente e termina a sua execuação, caso seja falso
 		boolean closeClient = true;
+		//boolean que permite iniciar a conexção com o servidor
 		boolean connect = true;
+		//variável utilizada após um login incorreto
 		boolean reconnect = false;
+		
+		//enquanto nao se quer fechar o cliente
 		while (closeClient) {
 			
 			
 			
-			
+			//o cliente pergunta ao usário se este se quer conectar
 			while(connect) {
 				
+				//Caso o login tenha sido incorreto
 				if(reconnect) {
 					acabarJogo = true;
 					closeClient = true;
@@ -76,15 +86,18 @@ public class Client { 																// CLIENTE
 					reconnect = false;
 					
 				} else {
+					//para um primeiro log in
 					System.out.println("Connect to server 'Torre de Hanoy' [Y/N]: ");
 					String connectionOnline = sc.nextLine();
 					
-					if(connectionOnline.toUpperCase().equals("Y")) {					
+					if(connectionOnline.toUpperCase().equals("Y")) {
+						//passamos ao proximo while loop e saimos deste
 						acabarJogo = true;
 						closeClient = true;
 						connect = false;
 						
 					} else if(connectionOnline.toUpperCase().equals("N")) {
+						//o cliente é terminado
 						closeClient =  false;
 						connect = false;
 					} else {
@@ -98,7 +111,7 @@ public class Client { 																// CLIENTE
 			
 			if (closeClient) {
 				
-				
+				//inicialização da comunicação com o server
 				Socket socket = new Socket("localhost", 1234);
 				InputStream in = socket.getInputStream();
 				DataInputStream dataIn=  new DataInputStream(in);
@@ -109,14 +122,15 @@ public class Client { 																// CLIENTE
 					
 				
 				
-					// Ler a resposta do servidor
+					// Ler a resposta do servidor, é um loop.
+					
 					String serverResponse = dataIn.readUTF();
 	
 								
 	
-					
+					//o input é analisado no seguinte switch case
 					switch(serverResponse){
-					
+					//dados fornecidos ao servidor para verificar se o utilizador existe.
 					case"LOGIN":
 						System.out.println("insert username: ");
 						name = sc.nextLine();
@@ -125,28 +139,30 @@ public class Client { 																// CLIENTE
 						dataOut.writeUTF(sc.nextLine());
 						
 						break;
-	
+					// o login é validado
 					case "VALID_CREDENTIAL":
 						
 						System.out.println("Valid Login!");
 									
-						
+						//verifica-se o usuário atual tem data scores armazenados no cliente
 						if(dataBase.get(name) == null) {
-							
+							//caso nao tenha, são atribuidos valores iniciais
 							for (int i=3; i<11;i++){
 								dataScores.put(i, new int[] {0, 0, i});
 								
 							}
 							
 							dataBase.put(name, dataScores);
-						} else {							
+						} else {	
+							//o hashmap temporario recebe as informações do hashmap com os usuários todos
 							dataScores = dataBase.get(name);
 						}
 						
 						
 						
 						break;
-								
+							
+					//um login incorreto termina a conecção com o server
 					case "INVALID_CREDENTIAL":
 						System.out.println("Invalid Login");
 						dataOut.writeUTF("OPTIONQ");
@@ -157,10 +173,10 @@ public class Client { 																// CLIENTE
 						socket.close();
 						//para impedir voltar ao inicio do primeiro loop
 						acabarJogo = false;
-						
+						//é perguntao ao cliente se quer reconectar
 						System.out.println("Reconnect? [Y/N]");
 						
-						
+						// o cliente é terminado ou recomeça a conexão ignorando o primeiro while loop
 						while(true) {
 							String exitLogin = sc.nextLine();
 							
@@ -183,7 +199,7 @@ public class Client { 																// CLIENTE
 						}
 						
 						break;
-						
+						//erro de protocolo
 					case "PROTOCOL_ERROR":
 		
 						System.out.println("Connection timed out");
