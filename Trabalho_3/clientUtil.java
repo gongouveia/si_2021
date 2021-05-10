@@ -316,17 +316,20 @@ public class clientUtil {
 		
 	}
 	
-	public static String showResults(HashMap<Integer, Integer[]> dataScores){
-
-		String endstring="";	
-		for (int i=3; i<11;i++){
-			if (dataScores.get(i)[1]>=0){
-				endstring += displayStat(dataScores.get(i)[0],dataScores.get(i)[1],i)+"\n"; 
+	public static void showResults(HashMap<Integer, int[]> dataScores){
+		float avg;
+		
+		for (int i=3; i<11;i++){			
+			if (dataScores.get(i)[0]>=1){
+				avg = (float) dataScores.get(i)[1] / dataScores.get(i)[0];
 				//{number of times played,total score,number of disks}  
+				System.out.println("For "+i+" rods you have in average "+ avg +" moves and you played "+ dataScores.get(i)[0] + " times");
+				avg = 0;
 			}	
+			
 
-		}
-		return endstring;
+		}	
+		
 	}
 
 }

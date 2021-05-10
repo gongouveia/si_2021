@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.util.Scanner;
 import java.util.Stack;
+import java.util.HashMap;
 
 
 
@@ -23,6 +24,28 @@ public class Client { 																// CLIENTE
 		Stack<Integer> StackOne = new Stack<Integer>();      //torre direita		
 		Stack<Integer> StackTwo = new Stack<Integer>();      //stack intermedia
 		Stack<Integer> StackThree = new Stack<Integer>();      //stack esquerda	
+		int solve = 0;
+		
+		/*<integer = disco, representa o disco
+		//, interger[] = 
+		 * - numero de vezes que o disco foi escolhido
+		 * - rondas para um disco
+		 * - média
+		 * - disco, representa o disco
+		*/
+		
+		
+		
+		
+		HashMap<Integer, int[]> dataScores = new HashMap<Integer, int[]>();
+		//{number of times played,total score,average,number of disks} 
+		
+		HashMap<String, HashMap<Integer, int[]>> dataBase = new HashMap<String, HashMap<Integer, int[]>>();
+		
+		
+		
+		
+		
 		
 		Scanner sc = new Scanner(System.in);
 		
@@ -34,33 +57,48 @@ public class Client { 																// CLIENTE
 		int endPin = 1;
 		int counter = 1;
 		
+		String name = "bro";
+		
 		boolean closeClient = true;
 		boolean connect = true;
-		
+		boolean reconnect = false;
 		while (closeClient) {
 			
-			connect = true;
+			
 			
 			
 			while(connect) {
-				System.out.println("Connect to server 'Torre de Hanoy' [Y/N]: ");
-				String connectionOnline = sc.nextLine();
 				
-				if(connectionOnline.toUpperCase().equals("Y")) {					
+				if(reconnect) {
 					acabarJogo = true;
+					closeClient = true;
 					connect = false;
+					reconnect = false;
 					
-				} else if(connectionOnline.toUpperCase().equals("N")) {
-					closeClient =  false;
-					connect = false;
 				} else {
-					System.out.println("Insert a Y or N.");
+					System.out.println("Connect to server 'Torre de Hanoy' [Y/N]: ");
+					String connectionOnline = sc.nextLine();
+					
+					if(connectionOnline.toUpperCase().equals("Y")) {					
+						acabarJogo = true;
+						closeClient = true;
+						connect = false;
+						
+					} else if(connectionOnline.toUpperCase().equals("N")) {
+						closeClient =  false;
+						connect = false;
+					} else {
+						System.out.println("Insert a Y or N.");
+				}
 				}
 			}
 		
 			
 			
+			
 			if (closeClient) {
+				
+				
 				Socket socket = new Socket("localhost", 1234);
 				InputStream in = socket.getInputStream();
 				DataInputStream dataIn=  new DataInputStream(in);
@@ -81,20 +119,74 @@ public class Client { 																// CLIENTE
 					
 					case"LOGIN":
 						System.out.println("insert username: ");
-						dataOut.writeUTF(sc.nextLine());
+						name = sc.nextLine();
+						dataOut.writeUTF(name);
 						System.out.println("insert password: ");
 						dataOut.writeUTF(sc.nextLine());
 						
 						break;
 	
 					case "VALID_CREDENTIAL":
+						
 						System.out.println("Valid Login!");
+									
+						
+						if(dataBase.get(name) == null) {
+							
+							for (int i=3; i<11;i++){
+								dataScores.put(i, new int[] {0, 0, i});
+								//System.out.println(dataScores.get(i)[2]);
+							}
+							
+							dataBase.put(name, dataScores);
+						} else {							
+							dataScores = dataBase.get(name);
+						}
+						
+						
+						/*for(int k = 3; k < dataScores.size() + 3 ; k++) {
+							for(int m = 0; m < 3; m++) {
+								System.out.println("fff");
+								System.out.println(dataScores.get(k)[m]);
+							}
+						}*/
 						break;
 								
 					case "INVALID_CREDENTIAL":
-						System.out.println("Invalid Login - Try again [Y/N]: ");
-						String option = sc.nextLine();
-						dataOut.writeUTF(option);
+						System.out.println("Invalid Login");
+						dataOut.writeUTF("OPTIONQ");
+						dataIn.close();
+						dataOut.close();
+						in.close();
+						out.close();
+						socket.close();
+						//para impedir voltar ao inicio do primeiro loop
+						acabarJogo = false;
+						
+						System.out.println("Reconnect? [Y/N]");
+						
+						
+						while(true) {
+							String exitLogin = sc.nextLine();
+							
+							if(exitLogin.toUpperCase().equals("Y")) {
+								
+								reconnect = true;
+								connect = true;
+								break;
+							} else if(exitLogin.toUpperCase().equals("N")) {
+								
+								closeClient =  false;
+								connect = false;
+								break;
+								
+							} else {
+								System.out.println("Inser a Y or N");
+								
+							}
+							
+						}
+						
 						break;
 						
 					case "PROTOCOL_ERROR":
@@ -113,6 +205,11 @@ public class Client { 																// CLIENTE
 							case "DISKS_ACCEPTED":
 								System.out.println("You picked " + diskNumber + " disks");
 								disk  = Integer.parseInt(diskNumber);
+								
+								int[] replace2 = {dataScores.get(disk)[0]+1, dataScores.get(disk)[1],disk};
+								dataScores.put(disk, replace2);
+								
+								solve = (int)Math.pow(2,disk)-1;
 								break;
 								
 							case "DISKS_DECLINED":
@@ -127,11 +224,11 @@ public class Client { 																// CLIENTE
 						
 					case "PIN_VERIFIER":
 		
-						System.out.println("* Insert initial pin: ");
+						System.out.println("* Insert initial pin: \n 1-Pin A \n 2-Pin B \n 3-Pin C ");
 						String initialpin = sc.nextLine();
 						dataOut.writeUTF(initialpin);
 						
-						System.out.println("* Insert final pin: ");
+						System.out.println("* Insert initial pin: \n 1-Pin A \n 2-Pin B \n 3-Pin C ");
 						String finalpin = sc.nextLine();
 						dataOut.writeUTF(finalpin);
 						
@@ -210,6 +307,7 @@ public class Client { 																// CLIENTE
 					case "COUNTER_ADD":
 						counter++;
 						break;
+						
 					case "COUNTER_RESET":
 						counter = 1;
 						break;
@@ -230,8 +328,25 @@ public class Client { 																// CLIENTE
 						break;
 						
 					case "WIN":
+						int counterAdd = counter + dataScores.get(disk)[1];
+						
+						int[] replace2 = {dataScores.get(disk)[0],counterAdd,disk};
+						dataScores.put(disk, replace2);
+						
 						System.out.println("------------\n You won!!!! \n------------\n");
+						System.out.println("You finished the game with "+ counter + "steps!");
+						System.out.println("The smallest possible number of steps is " + solve + ".");
 						break;
+						
+					case "SCORE_CALC":
+						
+						
+						
+						int[] replace = {dataScores.get(disk)[0],dataScores.get(disk)[1], disk};
+						dataScores.put(disk, replace);
+						dataBase.put(name, dataScores);
+						break;
+						
 					case "MENU":
 										
 						clientUtil.displayMenu();
@@ -239,27 +354,35 @@ public class Client { 																// CLIENTE
 						String menuoption= sc.nextLine().toUpperCase();
 						
 						switch (menuoption){
-						case "1":
-							dataOut.writeUTF("OPTION1");
-							break;
-							
-						case "2":
-							dataOut.writeUTF("OPTION2");
-							clientUtil.showResults(null);
-							System.out.println("Press any key");
-							
-							break;
-							
-						case"Q":
-							dataOut.writeUTF("OPTIONQ");
-							dataIn.close();
-							dataOut.close();
-							in.close();
-							out.close();
-							socket.close();
-							//para impedir voltar ao inicio do primeiro loop
-							acabarJogo = false;
-							break;
+							case "1":
+								dataOut.writeUTF("OPTION1");
+								break;
+								
+							case "2":
+								dataOut.writeUTF("OPTION2");
+
+								
+						
+								clientUtil.showResults(dataScores);
+								
+								
+								break;
+								
+							case"Q":
+								dataOut.writeUTF("OPTIONQ");
+								dataIn.close();
+								dataOut.close();
+								in.close();
+								out.close();
+								socket.close();
+								//para impedir voltar ao inicio do primeiro loop
+								acabarJogo = false;
+								connect = true;
+								break;
+							default:
+								dataOut.writeUTF("OPTIOND");
+								System.out.println("Select an accepted input. Select 1, 2 or Q.");
+								break;
 							
 						
 						}

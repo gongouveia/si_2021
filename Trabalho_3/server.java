@@ -50,7 +50,7 @@ public class server
 		
 		HashMap<String, String> credentials = new HashMap<String, String>();
 		
-		Stack<Stack<Integer>> scores = new Stack<Stack<Integer>>();
+		
 		credentials.put("user","123");
 		
 		boolean waiting = true;
@@ -72,6 +72,8 @@ public class server
 			boolean endGame = false;
 			
 			dataOut.writeUTF("LOGIN");
+			
+			
 			
 			endGame = serverUtil.credentialValidator(s1,in, out, credentials,s,dataOut,dataIn, endGame);
 			
@@ -176,7 +178,8 @@ public class server
 				//importante para validar qunado o jogo acaba
 				//ou seja quando o pin final tiver todas as peças e o pin inicial apenas uma
 					
-
+				//verifica se o tprre do pino final tem todos os discos
+				//quando isto acontece o é porque o jogo está completo
 				switch(towerFinish) {
 
 					case 1:
@@ -194,9 +197,11 @@ public class server
 
 				if (finalTowerSize == disk+1 || closeGame)   {
 					closeGame = false;
+					counter = 0;
 					
 					if (finalTowerSize == disk+1) {
 						dataOut.writeUTF("WIN");
+						dataOut.writeUTF("SCORE_CALC");
 					}
 					
 					System.out.println("Round Over.");
@@ -216,12 +221,13 @@ public class server
 					}
 				}
 
-
+				counter++;
 
 			} 
 
 
-			counter++;
+			
+			System.out.println("Client Disconnected.");
 		}
 
 	}

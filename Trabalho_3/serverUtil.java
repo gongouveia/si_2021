@@ -44,35 +44,25 @@ public class serverUtil {
 				} else {
 					System.out.println("Login Invalid.");
 					dataOut.writeUTF("INVALID_CREDENTIAL");
-		
-					String option;
-					
-					while(true) {
-						option = dataIn.readUTF().toUpperCase();
-						if(option.equals("N")) {
-							endGame = true;
-							validate = true;
-							dataOut.writeUTF("CLOSE_CLIENT");
-							dataOut.close();
-							dataIn.close();
-							in.close();
-							out.close();
-							s1.close();
-							break;
+					endGame = true;
+					validate = true;
+					dataOut.close();
+					dataIn.close();
+					in.close();
+					out.close();
+					s1.close();
 							
-						} else if (option.equals("Y")) {
-							dataOut.writeUTF("LOGIN");
-							break;
-						}	else {
-							dataOut.writeUTF("INVALID_CREDENTIAL");
-						}
+							
+						
 					}
 					
 				}
-			}
+			
 			return endGame;
 	}
-
+	//é no servidor que é validada a opção de jogo do cliente
+		//se a opção do cliente não foi aceite pelo clente o servidor manda mensagem ao cliente a avisar e pedir uma nova opção
+	
 	public static int diskXange (String move, DataOutputStream dataOut, Stack<Integer> a ,Stack<Integer> b, int movement) throws IOException {
 
 		
@@ -103,10 +93,15 @@ public class serverUtil {
 		dataOut.writeUTF("PIN_CLEAR");
 		dataOut.writeUTF("GAME_STARTED");
 		pinClear(aux1, aux2, aux3);
+
+		//é chamado o metodo que pede e em que avalia se a opção do cliente é valida para o nuemro de discos de jogo
 		disk = diskNumberPick(dataIn, dataOut, disk);
+		//array de dois elementos em que o lemento [0] é numero do pin inicial e o elemento [1] é o pino final
+				//o metodo intPinVerifier avalia se a opçaõ de pin inicial e final do utiliador é possivel
 		int[] pinArray = intPinVerifier(dataIn, dataOut);
 		
 		dataOut.writeUTF("PIN_FILLER");
+		//se todas as opções anteriores forem validas então os discos são colocados no pin inicial
 		pinFiller(disk, pinArray[0], aux1, aux2, aux3);
 		
 		int solve = (int)Math.pow(2,disk)-1; 
@@ -116,6 +111,7 @@ public class serverUtil {
 	
 	public static boolean menu(DataInputStream dataIn, DataOutputStream dataOut, boolean endGame)  throws IOException {
 		boolean menuOut = false;
+		
 		while(!menuOut) {
 			dataOut.writeUTF("MENU");
 			String displayaux = dataIn.readUTF();
@@ -133,12 +129,17 @@ public class serverUtil {
 	
 				case "OPTION2":
 					System.out.println("Stats showing.");
+					
 					break;
 	
 				case "OPTIONQ":
 					System.out.println("Exit from game.");
 					menuOut = true;
 					endGame = true;
+					break;
+				case "OPTIOND":
+					System.out.println("Forbidden input - Menu");
+					
 					break;
 	
 						
