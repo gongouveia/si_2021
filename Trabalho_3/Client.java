@@ -30,45 +30,55 @@ public class Client { 																// CLIENTE
 		//, interger[] = 
 		 * - numero de vezes que o disco foi escolhido
 		 * - rondas para um disco
-		 * - m�dia
+		 * - média
 		 * - disco, representa o disco
 		*/
 		
 		
 		
-		
+		//hashmap onde se guarda temporariamente os scores de um sessão de jogos
 		HashMap<Integer, int[]> dataScores = new HashMap<Integer, int[]>();
-		//{number of times played,total score,average,number of disks} 
-		
+		//Composição do array inicializado no hahsmap anterior{number of times played,total score,average,number of disks} 
+		// hashmap que contem os scores de todos os users, durante uma sessão do cliente.
 		HashMap<String, HashMap<Integer, int[]>> dataBase = new HashMap<String, HashMap<Integer, int[]>>();
 		
 		
 		
 		
 		
-		
+		//class scanner é inicializada para inputs
 		Scanner sc = new Scanner(System.in);
 		
 		
-		
+		//o usuário é bem vindo com uma mensagem
 		clientUtil.welcome();
+		//inicialização de variáveis essenciais para o funcionamento do jogo, os valores nao interessam por agora
+		//disco escolhido
 		int disk = 3;
+		//torre inicial escolhida
 		int initPin = 1;
+		//torre final escolhida
 		int endPin = 1;
+		//rondas num jogo
 		int counter = 1;
 		
 		String name = "bro";
-		
+		//boolean que fecha o cliente e termina a sua execuação, caso seja falso
 		boolean closeClient = true;
+		//boolean que permite iniciar a conexção com o servidor
 		boolean connect = true;
+		//variável utilizada após um login incorreto
 		boolean reconnect = false;
+		
+		//enquanto nao se quer fechar o cliente
 		while (closeClient) {
 			
 			
 			
-			
+			//o cliente pergunta ao usário se este se quer conectar
 			while(connect) {
 				
+				//Caso o login tenha sido incorreto
 				if(reconnect) {
 					acabarJogo = true;
 					closeClient = true;
@@ -76,15 +86,18 @@ public class Client { 																// CLIENTE
 					reconnect = false;
 					
 				} else {
+					//para um primeiro log in
 					System.out.println("Connect to server 'Torre de Hanoy' [Y/N]: ");
 					String connectionOnline = sc.nextLine();
 					
-					if(connectionOnline.toUpperCase().equals("Y")) {					
+					if(connectionOnline.toUpperCase().equals("Y")) {
+						//passamos ao proximo while loop e saimos deste
 						acabarJogo = true;
 						closeClient = true;
 						connect = false;
 						
 					} else if(connectionOnline.toUpperCase().equals("N")) {
+						//o cliente é terminado
 						closeClient =  false;
 						connect = false;
 					} else {
@@ -98,7 +111,7 @@ public class Client { 																// CLIENTE
 			
 			if (closeClient) {
 				
-				
+				//inicialização da comunicação com o server
 				Socket socket = new Socket("localhost", 1234);
 				InputStream in = socket.getInputStream();
 				DataInputStream dataIn=  new DataInputStream(in);
@@ -109,14 +122,15 @@ public class Client { 																// CLIENTE
 					
 				
 				
-					// Ler a resposta do servidor
+					// Ler a resposta do servidor, é um loop.
+					
 					String serverResponse = dataIn.readUTF();
 	
 								
 	
-					
+					//o input é analisado no seguinte switch case
 					switch(serverResponse){
-					
+					//dados fornecidos ao servidor para verificar se o utilizador existe.
 					case"LOGIN":
 						System.out.println("insert username: ");
 						name = sc.nextLine();
@@ -125,28 +139,30 @@ public class Client { 																// CLIENTE
 						dataOut.writeUTF(sc.nextLine());
 						
 						break;
-	
+					// o login é validado
 					case "VALID_CREDENTIAL":
 						
 						System.out.println("Valid Login!");
 									
-						
+						//verifica-se o usuário atual tem data scores armazenados no cliente
 						if(dataBase.get(name) == null) {
-							
+							//caso nao tenha, são atribuidos valores iniciais
 							for (int i=3; i<11;i++){
 								dataScores.put(i, new int[] {0, 0, i});
 								
 							}
 							
 							dataBase.put(name, dataScores);
-						} else {							
+						} else {	
+							//o hashmap temporario recebe as informações do hashmap com os usuários todos
 							dataScores = dataBase.get(name);
 						}
 						
 						
 						
 						break;
-								
+							
+					//um login incorreto termina a conecção com o server
 					case "INVALID_CREDENTIAL":
 						System.out.println("Invalid Login");
 						dataOut.writeUTF("OPTIONQ");
@@ -157,10 +173,10 @@ public class Client { 																// CLIENTE
 						socket.close();
 						//para impedir voltar ao inicio do primeiro loop
 						acabarJogo = false;
-						
+						//é perguntao ao cliente se quer reconectar
 						System.out.println("Reconnect? [Y/N]");
 						
-						
+						// o cliente é terminado ou recomeça a conexão ignorando o primeiro while loop
 						while(true) {
 							String exitLogin = sc.nextLine();
 							
@@ -183,42 +199,45 @@ public class Client { 																// CLIENTE
 						}
 						
 						break;
-						
+						//erro de protocolo quando ha uma falha de conexão
 					case "PROTOCOL_ERROR":
-		
 						System.out.println("Connection timed out");
 						acabarJogo=false;
 						break;
 
 					
 					case "DISK_NUMBER":
+						//é pedido o numero de disocs do jofo	
 						System.out.println("* Insert number of disks between 3 and 10 to continue: ");
 						String diskNumber = sc.nextLine();
 						dataOut.writeUTF(diskNumber);
 						
 						switch(dataIn.readUTF()) {
 							case "DISKS_ACCEPTED":
+								//no caso do input do utilizador ser verificado pelo server como valido
 								System.out.println("You picked " + diskNumber + " disks");
 								disk  = Integer.parseInt(diskNumber);
-								
+								//depois de optar por um disco as estatisticas dão update
 								int[] replace2 = {dataScores.get(disk)[0]+1, dataScores.get(disk)[1],disk};
 								dataScores.put(disk, replace2);
-								
+								//valor teorico de jogadas minimas para reoslver o jogo para um dado numero de discos
 								solve = (int)Math.pow(2,disk)-1;
 								break;
 								
 							case "DISKS_DECLINED":
+								//no caso de ser invaldio o input do utilizador
 								System.out.println("Please select a number between 3 and 10.");
 								break;
 								
 							case "DISKS_DECLINED_ERROR":
+								//no caso de  o input do utilizador seja um inteiro
 								System.out.println("Please insert a number.");
 								break;
 						}
 						break;
 						
 					case "PIN_VERIFIER":
-		
+						
 						System.out.println("* Insert initial pin: \n 1-Pin A \n 2-Pin B \n 3-Pin C ");
 						String initialpin = sc.nextLine();
 						dataOut.writeUTF(initialpin);
@@ -229,16 +248,18 @@ public class Client { 																// CLIENTE
 						
 						switch(dataIn.readUTF()) {
 						case "PIN_SELECTED":
-				
+							//se o servidor verifica os pins continau o programa
 							initPin = Integer.parseInt(initialpin);
 							endPin = Integer.parseInt(finalpin);
 							break;
 							
 						case "PIN_ERROR":
+							//o servidor náo aceita o input do cliente
 							System.out.println("Please select a number between 1 and 3.");
 							break;
 							
 						case "PIN_INVALID_NUMBER":
+							//quando o cliente envia ao servidor um input inavlido
 							System.out.println("Please insert a number.");
 							break;
 					}
@@ -246,22 +267,23 @@ public class Client { 																// CLIENTE
 						break;
 					case "GAME_STARTED":
 						clientUtil.welcome();
-						
 						break;
 						
 					case "PIN_FILLER":
-						
+						//coloca os discos na STack incial
 						clientUtil.pinFiller(disk,initPin, StackOne, StackTwo, StackThree);
-						
 						break;
 						
 					case "PLAY":
+						//Mostra as opções 
 						clientUtil.playOptions();
 						String play = sc.nextLine();
 						dataOut.writeUTF(play);
 						break;
 						
 					case "MOVE_DISK":
+						//se o servidor aceita a opção do cliente então localemnte o clienet move os discos 
+						//lê a resposta do servidor 
 						String move = dataIn.readUTF();
 						switch(move) {
 							case"1":
@@ -296,35 +318,40 @@ public class Client { 																// CLIENTE
 						break;
 						
 					case "COUNTER_PRINT":
+						//print do nuemro de rondas
 						System.out.println("Round: "  + counter);
 						break;
 						
 					case "COUNTER_ADD":
+						//aumenta o contador
 						counter++;
 						break;
 						
 					case "COUNTER_RESET":
+						//da reset ao codigo
 						counter = 1;
 						break;
 					case "NO_TRY":
-		
 						System.out.println("Server doesn't want to connect");
 						//invalid = false;
 						break;
 		
 					case "DRAW":
+						//desenha o tabuleiro
 						System.out.println("Final pin: " + endPin);
 						clientUtil.draw(disk, StackOne, StackTwo, StackThree);    
 						break;
 		
 						
 					case "PIN_CLEAR":
+						//da reset as stacks 
 						clientUtil.pinClear(StackOne, StackTwo, StackThree);;
 						break;
 						
 					case "WIN":
+						//quando ganha 
 						int counterAdd = counter + dataScores.get(disk)[1];
-						
+						//da update dos scores 
 						int[] replace2 = {dataScores.get(disk)[0],counterAdd,disk};
 						dataScores.put(disk, replace2);
 						
@@ -334,36 +361,35 @@ public class Client { 																// CLIENTE
 						break;
 						
 					case "SCORE_CALC":
-						
-						
-						
 						int[] replace = {dataScores.get(disk)[0],dataScores.get(disk)[1], disk};
 						dataScores.put(disk, replace);
+						//da update das estatisicas na dataBase
 						dataBase.put(name, dataScores);
 						break;
 						
 					case "MENU":
-										
+						//mostra o menu de opções				
 						clientUtil.displayMenu();
 						
 						String menuoption= sc.nextLine().toUpperCase();
 						
 						switch (menuoption){
 							case "1":
+								//recebe a opção validada
 								dataOut.writeUTF("OPTION1");
 								break;
 								
 							case "2":
+								//recebe a opção validada
 								dataOut.writeUTF("OPTION2");
-
-								
-						
 								clientUtil.showResults(dataScores);
 								
 								
 								break;
 								
 							case"Q":
+								//deconecta do seridor
+								
 								dataOut.writeUTF("OPTIONQ");
 								dataIn.close();
 								dataOut.close();
@@ -375,6 +401,7 @@ public class Client { 																// CLIENTE
 								connect = true;
 								break;
 							default:
+								//qualquer outra opção enviada pelo cliente
 								dataOut.writeUTF("OPTIOND");
 								System.out.println("Select an accepted input. Select 1, 2 or Q.");
 								break;
@@ -385,6 +412,7 @@ public class Client { 																// CLIENTE
 						break;
 						
 					case"CLOSE_CLIENT":
+						//desconecta o cliente do servidor
 						dataIn.close();
 						dataOut.close();
 						in.close();

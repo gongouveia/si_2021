@@ -17,16 +17,16 @@ public class server
 
 
 		
-		int counter = 0; // regista o numero de passos atÈ resolver o puzzle
+		int counter = 0; // regista o numero de passos at√© resolver o puzzle
 		
-		//RecepÁ„o ao jogador
+		//Recep√ß√£o ao jogador
 
 
 		/*
-		 * Stacks vazios s„o arrays que permitem alteraÁıes aos seus elementos
+		 * Stacks vazios s√£o arrays que permitem altera√ß√µes aos seus elementos
 		 * decidimos realizar este exercicio por Stacks pois para algoritmos 
-		 * recursivos È uma otima ferramenta.*/
-		// criaÁ„o de uma stack vazia para cada torre
+		 * recursivos √© uma otima ferramenta.*/
+		// cria√ß√£o de uma stack vazia para cada torre
 		Stack<Integer> aux1 = new Stack<Integer>();      //torre direita		
 		Stack<Integer> aux2 = new Stack<Integer>();      //stack intermedia
 		Stack<Integer> aux3 = new Stack<Integer>();      //stack esquerda		
@@ -36,9 +36,9 @@ public class server
 	
 
 
-		int disk = 0;    //n˙mero de discos usados durante o jogo 
+		int disk = 0;    //n√∫mero de discos usados durante o jogo 
 		
-		//int counter = 0; // regista o numero de passos atÈ resolver o puzzle
+		//int counter = 0; // regista o numero de passos at√© resolver o puzzle
 
 		int size1 = 0;   //inicializa o tamanho de cada um dos stacks
 		int size2 = 0;
@@ -70,23 +70,26 @@ public class server
 			DataOutputStream dataOut = new DataOutputStream(out);
 			
 			boolean endGame = false;
-			
+			//pede ao cliente para inserir as credenciais de log in
 			dataOut.writeUTF("LOGIN");
 			
-			
-			
+			//verifica se as credenciais do utilizador s√£o validas ou n√£o
+			//caso as credenciais sejam validas o jogo pode prosseguir
+			//caso as credenciais sejam invalidas o cliente √© desconectado
 			endGame = serverUtil.credentialValidator(s1,in, out, credentials,s,dataOut,dataIn, endGame);
 			
 
-			//pede ao cliente o n˙mero de discos
-			
+			//pede ao cliente o n√∫mero de discos
+			//sendo o solve o valor minimo de jogadas em que √© possivel reoslver o jogo
 			int[] arrayGame = new int[4];
 			
 			if(!endGame) {
-			
+				
 				arrayGame = serverUtil.newGame(disk, dataIn, dataOut, aux1, aux2, aux3);
+				//{pin inciial, pin final,numero de discos, nuemro de passos minimos para resolver o jogo}
 
 			} else {
+				//para inicializar a array
 				arrayGame[0] = 0;
 				arrayGame[1] = 0;
 				arrayGame[2] = 0;
@@ -94,75 +97,87 @@ public class server
 				
 			}
 			
-			
+			//
 			while(!endGame) {
-				disk = arrayGame[2];
+				//numero de discos de jogo
+				disk = arrayGame[2];  
+				//torre final
 				int towerFinish =  arrayGame[1];
 				
 			
 				
 				//serverUtil.optionsMenu();
 				dataOut.writeUTF("COUNTER_PRINT");
+				//envia ao cliente que para dar print do tabuleiro
 				dataOut.writeUTF("DRAW");
+				//mostra ao cliente as op√ß√µes de jogo e pede um input valido
 				dataOut.writeUTF("PLAY");
+				//op√ß√£o de jogo inserida pelo cliente
 				String switchoption = dataIn.readUTF();
 				
-				
 				dataOut.writeUTF("MOVE_DISK");
-
-				switch (switchoption.toUpperCase()) {       //implementamos este switch para avaliar cada um dos inputs do ultilizador
-				//alÈm disso, um movimento so È contado, se existir movimento de discos entre pir‚mides
+				
+				switch (switchoption.toUpperCase()) {     
+						//implementamos este switch para avaliar cada um dos inputs do ultilizador
+				//al√©m disso, um movimento so √© contado, se existir movimento de discos entre pir√¢mides
 				case "1":
-					
-					counter = serverUtil.diskXange(switchoption, dataOut, aux1,aux2, counter);    //1:A-->B
+					//1:A-->B
+					counter = serverUtil.diskXange(switchoption, dataOut, aux1,aux2, counter);    
 					
 					break;
 
 				case "2":
-					counter = serverUtil.diskXange(switchoption, dataOut, aux1,aux3, counter);    //2:A-->C
+					//2:A-->C
+					counter = serverUtil.diskXange(switchoption, dataOut, aux1,aux3, counter);   
 					
 					break;
 
-				case "3":
-					counter = serverUtil.diskXange(switchoption, dataOut, aux2,aux1, counter);    //3:B-->A
+				case "3": 
+					//3:B-->A
+					counter = serverUtil.diskXange(switchoption, dataOut, aux2,aux1, counter);   
 					
 					break;
 
-				case "4":
-					counter = serverUtil.diskXange(switchoption, dataOut, aux2,aux3, counter);    //4:B-->C
+				case "4": 
+					//4:B-->C
+					counter = serverUtil.diskXange(switchoption, dataOut, aux2,aux3, counter);   
 					
 					break;
 
 				case "5":
-					
-					counter = serverUtil.diskXange(switchoption, dataOut, aux3,aux1, counter);    //5:C-->A
+					//5:C-->A
+					counter = serverUtil.diskXange(switchoption, dataOut, aux3,aux1, counter);   
 					
 					break;
 
 				case "6":
-					counter = serverUtil.diskXange(switchoption, dataOut, aux3,aux2, counter);	 //6:C-->B
+					//6:C-->B
+					counter = serverUtil.diskXange(switchoption, dataOut, aux3,aux2, counter);	 
 
 					break;
 
 				case "":
-					// movimento vazio È ignorado
+					// movimento vazio √© ignorado
 					break;
 				case "Y":
-					// movimento vazio È ignorado
+					// caso o jogador insira Y o jogo acaba 
 					dataOut.writeUTF("Y");
 					System.out.println("Client requested to close current game.");
 					closeGame = true;
 					break;
 
-				default:                      //qualquer outro input do 
-					 			  //mensagem de erro
+				default:   
+					//qualquer outro input do cliente mostra mensagem de erro e pede um novo input ao cliente
 					System.out.println("Default error input.");
 					dataOut.writeUTF("default");
 					break;
 
 				}
 				
-				
+				 //esta parte serve para verificar qual o ttamanho do pin final
+				//importante para validar qunado o jogo acaba
+				//ou seja quando o pin final tiver todas as pe√ßas
+					
 				
 				Object[] auxx1 = aux1.toArray(); 
 				size1 = auxx1.length;
@@ -174,45 +189,55 @@ public class server
 				Object[] auxx3 = aux3.toArray(); 
 				size3 = auxx3.length;
 
-				 //esta parte serve para verificar qual o tamanho do pin inicial e do pin final
-				//importante para validar qunado o jogo acaba
-				//ou seja quando o pin final tiver todas as peÁas e o pin inicial apenas uma
-					
+				
 				//verifica se o tprre do pino final tem todos os discos
-				//quando isto acontece o È porque o jogo est· completo
+				//quando isto acontece o √© porque o jogo est√° completo
+				
 				switch(towerFinish) {
 
 					case 1:
+						//caso em que a torre final √© a torre esquerda
 						finalTowerSize=size1;
 						break;
 					case 2:
+						//caso em que a torre final √© a torre do meio
 						finalTowerSize=size2;
 						break;
 					case 3:
+						//caso em que a torre final √© a torre direita
 						finalTowerSize=size3;
 						break;
 				}	
 
-
-
+				//quando a torre final tiver todos os discos o jogo acaba
+				//finalTowerSize == disk+1 pois tenho que adicionar um para adicionar o valor guardado como base da stack
 				if (finalTowerSize == disk+1 || closeGame)   {
 					closeGame = false;
 					counter = 0;
 					
 					if (finalTowerSize == disk+1) {
+						//envia ao cliente que ganhou
 						dataOut.writeUTF("WIN");
 						dataOut.writeUTF("SCORE_CALC");
 					}
 					
 					System.out.println("Round Over.");
 					
-					
+					//√© mostrado o menu ao cliente 
+					//caso o cliente opte por fazer QUIT do jogo endGame=true
+					//caso o cliente veja as estatisticas e volte a querer jogar endGame=false e recome√ßa um novo jogo
 					endGame = serverUtil.menu(dataIn, dataOut, endGame);
 					
-					
+					//quando o jogo acaba
 					if(!endGame) {
+						//o cliente quiser jogar mais um jogo
+						// as avariaveis de jogo d√£o reset para come√ßar um novo jogo
+						//as stacks d√£o reset
+						//e o n√∫mero do disco tambem leva reset
 						arrayGame = serverUtil.newGame(disk, dataIn, dataOut, aux1, aux2, aux3);
 					} else {
+						//caso o cliente n√£o queira jogar mais 
+						//o cliente √© desconectado
 						dataIn.close();
 						dataOut.close();
 						in.close();
@@ -220,7 +245,7 @@ public class server
 						s1.close();
 					}
 				}
-
+				//ao fim de cada jogada incrementa o counter
 				counter++;
 
 			} 
