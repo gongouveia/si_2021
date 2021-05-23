@@ -1,0 +1,233 @@
+public static void mainMenu (Scanner sc, boolean option_menu2, String currentAuthor) {
+		
+		//debug
+		String[] arr = new String[2];
+		arr[0] = "user1";
+		arr[1] = "im";
+		Pub book1 = new Pub("bruv", 2000, arr, "gh", 1,2,3555,1);
+		pubDB.put(book1.getDOI(), book1 );
+		
+		String[] arr2 = new String[2];
+		arr2[0] = "jwwc";
+		arr2[1] = "user1";
+		Pub book2 = new Pub("bruv2", 2021, arr2, "gww", 13,22,342,2);
+		
+		pubDB.put(book2.getDOI(), book2);
+		System.out.println(pubDB.get(1).getAuthors()[0]);
+		
+		String[] arr3 = new String[3];
+		arr3[0] = "user1";
+		arr3[1] = "weeetm";
+		arr3[2] = "rtt";
+		Pub book3 = new Pub("bruv", 2023, arr3, "gwsfw", 133,222,322,12345);
+		
+		pubDB.put(book3.getDOI(), book3);
+		
+		//variavel para receber inputs do utilizador
+		String input;
+		//valor que indica se o user que ordernar as pubs por ano ou citações
+		//boolean orderYear = true;
+		//stack que contem todas as publicações do atual utilizador
+		Stack<Pub> authorPubs = new Stack<Pub>();
+		//pub auxiliar que contem todas as pubs ordenadas
+		Stack<Pub> pubsOrder = new Stack<Pub>();
+		
+		
+		//tamanho do array que contem todas as pubs de autor
+		int size;
+		
+		//variaveis auxiliares para ordenar as pubs por ano crescente
+		int min;
+		int addDoi;
+		int indexRemove;
+		//var auxiliar para ordenar pubs por citações descrescente
+		int max;
+		
+		//Loop para permitir voltar ao menu central. Caso contrário, este loop não é ativado
+		
+		
+		
+		
+		while(option_menu2) {
+			
+			//menu apresnetado
+			System.out.println("\n\nMENU USER:");
+			System.out.println("1-Minhas publicações");
+			System.out.println("2-Introduzir publicações");
+			System.out.println("3-Publicações candidatas");
+			System.out.println("4-Remover publicações");
+			System.out.println("5-My Performance");
+			System.out.println("6-Exit\n");
+			
+			//é pedido ao utilizador o que deseja
+			input = sc.nextLine();
+			
+			//o input é recebido e analisado
+			 switch(input){
+			 
+
+			case "1":
+				/*
+				 * Apresentar as publicações ao utilizador:
+				 * - Por ordem crescente de citações
+				 * - Por ordem descrescente de ano
+				*/
+			
+			
+				System.out.println("Currente Authror: " + currentAuthor);
+				//Loop para atualizar a publicações do autor
+				//itera sobre cada objeto pub na base de dados geral
+				for (Pub selectedPub : pubDB.values()) {
+					//de seguida, itera sobre cada um dos autores da pub
+					
+					for(String author : selectedPub.getAuthors())
+						//se a var author for nula, entao ignora o codigo
+						// tem de ser dois if's separados, senão dá erro
+						// null.equals não funciona
+						
+							//System.out.println(author);
+							// se um deles for o autor que atualmente está em sessão
+							//então o array auxiliar é atualizado
+							
+							if(author != null) {
+								if(author.equals(currentAuthor) ) {
+									
+									authorPubs.push(selectedPub);
+								
+								}
+							}
+				
+				}
+				//o tamanho do stack que todos os stacks é uptated
+				// o tamanho é importante ficar numa variavel, porque
+				//o tamanho da stack vai variar descobrir o valor max ou min
+				size = authorPubs.size();
+				
+				/*
+				for(Pub pub : authorPubs) {
+					pub.print();
+				}*/
+				
+				System.out.println("Listar publicações:\n 1 - Por ano\n 2 - por citações");
+				input = sc.nextLine();
+				
+				switch(input) {
+					case "1":
+						/*1º Caso: Ordenar por ano
+						 *
+						 *ALgoritmo para ordenar por ano.
+						 *Primeiro escolhe se uma pub e depois verifica-se a 
+						 *que tem o ano mais pequeno entre todas. A pub com o ano
+						 *mais pequeno é adicionado a uma stack vazia. A pub é 
+						 *removida da stack das pubs do autor
+						 *Reinicia-se o loop com uma pub a menos.
+						 */
+						
+						
+						while(pubsOrder.size() != size) {
+							min = authorPubs.get(0).getYear();
+							addDoi = authorPubs.get(0).getDOI();
+							indexRemove = 0;
+							
+							for(int j = 0; j < authorPubs.size(); j++) {
+								Pub pub = authorPubs.get(j);
+								
+								if(pub.getYear() < min) {
+									min = pub.getYear();
+									addDoi = pub.getDOI();
+									indexRemove = j;
+								}
+								
+							}
+							pubsOrder.push(pubDB.get(addDoi));
+							authorPubs.remove(indexRemove);
+							
+						}
+					
+						
+						
+						break;
+					case"2":
+						/*2º Caso: Ordenar por citação
+						 *
+						 *ALgoritmo para ordenar por citação.
+						 *Primeiro escolhe se uma pub e depois verifica-se a 
+						 *que tem o número de citações maior entre todas. A pub com o número 
+						 *de citações maior é adicionado a uma stack vazia.
+						 *A pub é removida da stack das pubs do autor
+						 *Reinicia-se o loop com uma pub a menos.
+						 */
+						
+						/*Não dá para por em função, pq este loop descobre um
+						 * máximo e depende de metodos de uma classe, não iterativos
+						*/
+						while(pubsOrder.size() != size) {
+							
+							max = authorPubs.get(0).getCitations();
+							addDoi = authorPubs.get(0).getDOI();
+							indexRemove = 0;
+							
+							for(int j = 0; j < authorPubs.size(); j++) {
+								Pub pub = authorPubs.get(j);
+								
+								if(pub.getCitations() > max) {
+									max = pub.getCitations();
+									addDoi = pub.getDOI();
+									indexRemove = j;
+								}
+								
+							}
+							pubsOrder.push(pubDB.get(addDoi));
+							authorPubs.remove(indexRemove);
+							
+						}
+						break;
+					default:
+						break;
+						
+				}
+				//A stack que contem todas pubs do autor está vazia
+				//A pubs de um autor são todas readicionadas à stack principal
+				//authorPubs = pubsOrder;
+				
+				
+				System.out.println("Publications: ");
+				
+				System.out.println("Number of pubs: " + pubsOrder.size());
+				
+				for(Pub pub : pubsOrder) {
+					
+					pub.print();
+				}
+				
+				pubsOrder.clear();
+				break;
+	
+			case "2":
+				break;
+	
+	
+			case "3":
+				break;
+	
+	
+			case "4":
+				break;
+	
+	
+			case "5":
+	
+				break;	
+	
+	
+			case "6":
+				
+				break;
+	
+			default:
+				System.out.println("Invalid option");
+				break;
+	
+			}
+			 
+		}
