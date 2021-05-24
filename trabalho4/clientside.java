@@ -108,8 +108,8 @@ public class clientside {
 		}	
 					System.out.println("You have loged in.");
 
-					user = interfaceServer.;
-					mainMenu(sc, option_menu2, user,  interfaceServer);
+					//user = interfaceServer.;
+					//mainMenu(sc, option_menu2, user,  interfaceServer);
 				
 		}
 				
