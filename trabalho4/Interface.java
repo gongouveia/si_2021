@@ -8,9 +8,12 @@ import java.rmi.server.*;
 
 public interface Interface extends Remote{
 
+	
 	public boolean loginVerify(String mail, String password) throws RemoteException;
 	
-	public void logUpRoutine(String newname, String newmail,String newpassword, String newaff) throws RemoteException;
+	public int logUpRoutine(String newname, String newmail,String newpassword, String newaff) throws RemoteException;
+	
+	public Client whosclient(String passowrd) throws RemoteException ;
 		
 	public void requestPubs(Client user);
 	
