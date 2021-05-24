@@ -29,7 +29,7 @@ public class clientside {
 		
 		Scanner sc = new Scanner(System.in);
 	
-		//declaração de um objeto cliente que contem pubs
+		//declaraÃ§Ã£o de um objeto cliente que contem pubs
 		Client user;
 		
 		System.out.println("***********");
@@ -68,12 +68,18 @@ public class clientside {
 							//procura por todos os clientes da base de dados
 							
 							 option_menu1 = interfaceServer.loginVerify(user_login,pass_login);
-							 
-							 
+							 //option_menu1 Ã© TRUE se o login for invalido 
+							 //option_menu1 Ã© FALSE se o login for valido 
+							 if (option_menu1) {
+								 System.out.println("Invalid Log In\n");
+								 }else {
+									 System.out.println("Valid Log In\n");
+								 }
 							break;
+							
 						}
 						case "2": {
-							//cliente não quer fazer registo nem log in
+							//cliente nÃ£o quer fazer registo nem log in
 							System.out.println("Disconnected \n");
 							end_connection = true;
 							option_menu1 = false;
@@ -93,7 +99,28 @@ public class clientside {
 							String newaff= sc.nextLine();
 							
 							
-							interfaceServer.logUpRoutine(newname, newmail, newpassword, newaff);
+							int option_logUp = interfaceServer.logUpRoutine(newname, newmail, newpassword, newaff);
+							
+							//no logUp existem 3 casos que podem acontecer
+							//1-o email inserido pelo cliente Ã© repetido e nÃ£o Ã© valido
+							//2-a conta Ã© criada com sucesso  eo cliente Ã© adicionado ao ficheiro
+							//3-o email inserido pelo ciente nÃ£o tem @mail no nome, ou seja tem um formato nÃ£o valido
+							switch (option_logUp) {
+							
+							case 1:
+								System.out.println("ERROR - Please insert a valid email");
+								System.out.println("Email repeated\n");
+								break;
+							
+							case 2:
+								System.out.println("Acc created with success\n");
+								break;
+							case 3:
+								System.out.println("ERROR - Please insert a valid email");
+								System.out.println("Insert @mail for valid email\n");
+								break;
+							
+							}
 							
 
 
@@ -148,23 +175,23 @@ public class clientside {
 			
 			//menu apresnetado
 			System.out.println("\n\nMENU USER:");
-			System.out.println("1-Minhas publicações");
-			System.out.println("2-Introduzir publicações");
-			System.out.println("3-Publicações candidatas");
-			System.out.println("4-Remover publicações");
+			System.out.println("1-Minhas publicaÃ§Ãµes");
+			System.out.println("2-Introduzir publicaÃ§Ãµes");
+			System.out.println("3-PublicaÃ§Ãµes candidatas");
+			System.out.println("4-Remover publicaÃ§Ãµes");
 			System.out.println("5-My Performance");
 			System.out.println("6-Exit\n");
 			
-			//É pedido ao utilizador o que deseja
+			//Ã‰ pedido ao utilizador o que deseja
 			input = sc.nextLine();
 			
-			//o input é recebido e analisado
+			//o input Ã© recebido e analisado
 			 switch(input){
 			 
 
 			case "1":
 				
-				System.out.println("Listar publicações:\n 1 - Por ano\n 2 - por citações");
+				System.out.println("Listar publicaÃ§Ãµes:\n 1 - Por ano\n 2 - por citaÃ§Ãµes");
 				input = sc.nextLine();
 				
 				switch(input) {
@@ -197,10 +224,10 @@ public class clientside {
 				
 					interfaceServer.requestPubs(user);
 					
-					//impressão de pubs candidatas
+					//impressÃ£o de pubs candidatas
 					int counter = 1;
 					
-					//controlo de entradas corretas. Prende o utilizador até este 
+					//controlo de entradas corretas. Prende o utilizador atÃ© este 
 					//escolher um input adequado
 					boolean correctInput = false;
 					
@@ -230,9 +257,9 @@ public class clientside {
 							correctInput = true;
 							
 						} else {
-							//separação dos números por espaco
+							//separaÃ§Ã£o dos nÃºmeros por espaco
 							String[] numberString = input.split(" ");
-							//conversão de texto para inteiro
+							//conversÃ£o de texto para inteiro
 							int textToNumber;
 							//stack para enviar ao server
 							Stack<Integer> numberInt = new Stack<Integer>();
@@ -240,8 +267,8 @@ public class clientside {
 							//contador para verificar se todos os numeros sao convertidos
 							counter = 1;
 							
-							//cada texto é convertido num inteiro. 
-							//É detetado o erro de inputs q nao pode ser convertidos
+							//cada texto Ã© convertido num inteiro. 
+							//Ã‰ detetado o erro de inputs q nao pode ser convertidos
 							for( String i : numberString) {
 								//esperamos por erros
 								try {
@@ -262,7 +289,7 @@ public class clientside {
 							//se todos os inputs tiverem sido convertidos
 							if(counter == numberInt.size()) {
 								for(int j : numberInt) {
-									//entao os objetos pubs são adicionados numa stack auxiliar
+									//entao os objetos pubs sÃ£o adicionados numa stack auxiliar
 									auxPubs.push(user.requestPubs().get(j));
 								}
 								//a stack do utilizador e atualizada
