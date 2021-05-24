@@ -1,5 +1,5 @@
 
-package trabalho4;
+package si_2021.trabalho4;
 import java.util.*;
 import java.rmi.registry.LocateRegistry; 
 import java.rmi.registry.Registry;
@@ -29,6 +29,8 @@ public class clientside {
 		
 		Scanner sc = new Scanner(System.in);
 	
+		//declaração de um objeto cliente que contem pubs
+		Client user;
 		
 		System.out.println("***********");
 		System.out.println("**WELCOME**");
@@ -72,7 +74,7 @@ public class clientside {
 						}
 						case "2": {
 							//cliente não quer fazer registo nem log in
-							System.out.println("disconnected \n");
+							System.out.println("Disconnected \n");
 							end_connection = true;
 							option_menu1 = false;
 							break;
@@ -101,23 +103,13 @@ public class clientside {
 						
 					}
 				
-			
-				
-				
-
-					
-
-					
-					
-
-				
-				
 
 		
 		}	
-					System.out.println("DEBUG-saiu do primeiro MENU");
+					System.out.println("You have loged in.");
 
-					//mainMenu(sc, option_menu2, currentUser);
+					user = interfaceServer.;
+					mainMenu(sc, option_menu2, user,  interfaceServer);
 				
 		}
 				
@@ -148,4 +140,176 @@ public class clientside {
 		}
 	}
 
+	
+	public static void mainMenu (Scanner sc, boolean optionMenu, Client user, Interface interfaceServer) {
+		//variavel para receber inputs do utilizador
+		String input;
+		while(optionMenu) {
+			
+			//menu apresnetado
+			System.out.println("\n\nMENU USER:");
+			System.out.println("1-Minhas publicações");
+			System.out.println("2-Introduzir publicações");
+			System.out.println("3-Publicações candidatas");
+			System.out.println("4-Remover publicações");
+			System.out.println("5-My Performance");
+			System.out.println("6-Exit\n");
+			
+			//É pedido ao utilizador o que deseja
+			input = sc.nextLine();
+			
+			//o input é recebido e analisado
+			 switch(input){
+			 
+
+			case "1":
+				
+				System.out.println("Listar publicações:\n 1 - Por ano\n 2 - por citações");
+				input = sc.nextLine();
+				
+				switch(input) {
+					case "1":
+						interfaceServer.printPubs(user, true);
+						printPublications(user.getPubs());
+						
+						break;
+					case"2":
+						interfaceServer.printPubs(user, false);
+						printPublications(user.getPubs());
+						break;
+					default:
+						System.out.println("Please select 1 or 2.");
+						break;
+				}
+				
+				//Print das pubs
+				
+				
+			
+				break;
+	
+			case "2":
+				break;
+	
+	
+			case "3":
+				//pedido ao server de pubs candidatas
+				
+					interfaceServer.requestPubs(user);
+					
+					//impressão de pubs candidatas
+					int counter = 1;
+					
+					//controlo de entradas corretas. Prende o utilizador até este 
+					//escolher um input adequado
+					boolean correctInput = false;
+					
+					//se existir pubs para adicionar
+					if(!user.requestPubs.empty()) {
+						//apresenta as pubs
+						
+						printPublications(user.requestPubs());
+						System.out.println("Select pubs. Example: 1 2 3 12 45 334");
+						System.out.println("Press X to get out.");
+						correctInput = false;
+					
+					} else {
+						System.out.println("No more publications to add.");
+						correctInput = true;
+					}
+					
+					
+					
+					while(!correctInput) {
+						//input de pubs candidatas
+						input = sc.nextLine();
+						
+						if(input.toUpperCase().equals("X")) {
+							//sai do loop
+							System.out.println("Pressed X");
+							correctInput = true;
+							
+						} else {
+							//separação dos números por espaco
+							String[] numberString = input.split(" ");
+							//conversão de texto para inteiro
+							int textToNumber;
+							//stack para enviar ao server
+							Stack<Integer> numberInt = new Stack<Integer>();
+							
+							//contador para verificar se todos os numeros sao convertidos
+							counter = 1;
+							
+							//cada texto é convertido num inteiro. 
+							//É detetado o erro de inputs q nao pode ser convertidos
+							for( String i : numberString) {
+								//esperamos por erros
+								try {
+									//passagem de texto para int
+									textToNumber = Integer.parseInt(i);
+									//o numero e inserido numa stack
+									numberInt.push(textToNumber);
+								} catch (Exception e) {
+										System.out.println("Please select a correct number.");
+									break;
+								}
+								//o counter aumenta
+								counter++;
+							}
+							
+							Stack<Pub> auxPubs = new Stack<Pub>();
+							
+							//se todos os inputs tiverem sido convertidos
+							if(counter == numberInt.size()) {
+								for(int j : numberInt) {
+									//entao os objetos pubs são adicionados numa stack auxiliar
+									auxPubs.push(user.requestPubs().get(j));
+								}
+								//a stack do utilizador e atualizada
+								user.userPubsUpdate(auxPubs);
+								correctInput = true;
+							}
+							
+						}
+					}	
+
+				
+				break;
+	
+	
+			case "4":
+				break;
+	
+	
+			case "5":
+				interfaceServer.performance(user);
+				System.out.println("Performance: " + user.citationScore);
+				break;	
+	
+	
+			case "6":
+				
+				break;
+	
+			default:
+				System.out.println("Invalid option");
+				break;
+	
+			}
+			 
+		}
+
+	}
+	
+	
+	public static void printPublications(Stack<Pub> pub) {
+		int counter = 0;
+		System.out.println("Publications: ");
+		for(Pub i : pub) {
+			System.out.println("Publication: " + counter);
+			i.print();
+			counter++;
+		}
+	}
+	
 }

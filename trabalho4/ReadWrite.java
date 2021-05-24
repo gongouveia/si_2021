@@ -1,4 +1,4 @@
-package trabalho4;
+package si_2021.trabalho4;
 
 import java.io.File;  // Import the File class  
 import java.io.FileNotFoundException;  // Import this class to handle errors
@@ -60,6 +60,7 @@ public class ReadWrite {
 				
 			}
 			
+			//myReader.close();
 		}catch (FileNotFoundException e) {
 			System.out.println("An error occurred. File not found.");
 			e.printStackTrace();

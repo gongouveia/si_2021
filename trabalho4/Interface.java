@@ -1,4 +1,4 @@
-package trabalho4;
+package si_2021.trabalho4;
 import java.rmi.*;  
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -12,4 +12,10 @@ public interface Interface extends Remote{
 	
 	public void logUpRoutine(String newname, String newmail,String newpassword, String newaff) throws RemoteException;
 		
+	public void requestPubs(Client user);
+	
+	public void printPubs(Client user, boolean order);
+	
+	public void performance(Client user);
+	
 }
