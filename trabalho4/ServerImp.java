@@ -289,6 +289,12 @@ public class ServerImp extends UnicastRemoteObject implements Interface{
 		return RWfile.add_pub(title, numbers[0], authors, journal, numbers[2], numbers[1], numbers[4], numbers[3]);
 	}
 
+	public void removePub(int DOI) throws IOException
+	{
+		RWfile.removePub(DOI);
+		System.out.println("file_Updated");
+		
+	}
 }
 		
 	
