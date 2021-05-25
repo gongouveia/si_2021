@@ -320,7 +320,7 @@ public class ServerImp extends UnicastRemoteObject implements Interface{
 			//se o nome do usuario for igual a um dos autores
 			System.out.println("Checking if there is any pub this author can remove.");
 			System.out.println(authorIndex + " " + user.getName());
-			if(user.getName() ==  authorIndex) {
+			if(user.getName().equals(authorIndex)) {
 				
 				System.out.println("It's the same author. Removing pub.");
 				//remove-se a entry do ficheiro
