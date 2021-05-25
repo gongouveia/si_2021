@@ -44,7 +44,7 @@ public class ReadWrite {
 			
 			Scanner myReader = new Scanner(myObj);
 			//clientDB.put(null, null);
-			//lÍ todas as linhas do ficheiro de clientes
+			//l√™ todas as linhas do ficheiro de clientes
 			while (myReader.hasNextLine()) {
 
 
@@ -198,7 +198,7 @@ public class ReadWrite {
 				int DOI_toCompare = Integer.parseInt(dataStrip[dataStrip.length-1]);
 				if (DOI_toCompare==DOI) {
 					myReader.close();
-					//o DOI que se quer inserir est· na base de dados
+					//o DOI que se quer inserir est√° na base de dados
 					return false;
 				}
 			}
@@ -208,7 +208,7 @@ public class ReadWrite {
 			System.out.println("An error occurred.\n");
 			e.printStackTrace();
 		}
-		//o DOI que ser quer inserir n„o esta na base de dados
+		//o DOI que ser quer inserir n√£o esta na base de dados
 		return true;
 	}
 
@@ -219,7 +219,7 @@ public class ReadWrite {
 		try {
 
 			
-				//se a publicaÁ„o puder ser adicionada È adicionada ao ficheiro		
+				//se a publica√ß√£o puder ser adicionada √© adicionada ao ficheiro		
 				BufferedWriter bw_pubs = null;
 				bw_pubs = new BufferedWriter(new FileWriter(this.file_publication, true));
 
@@ -229,7 +229,7 @@ public class ReadWrite {
 				for(String i:authors) {
 					author_string+=i.trim()+"!";
 				}
-				//da append de uma nova pubicaÁ„o no ficheiro
+				//da append de uma nova pubica√ß√£o no ficheiro
 				
 				bw_pubs.write(title+"/"+year+"/"+author_string+"/"+journal+"/"+volume+"/"+page+"/"+nmb_citations+"/"+DOI);
 				bw_pubs.newLine();
@@ -256,18 +256,44 @@ public class ReadWrite {
 
 	public boolean add_pub( String title, int year, String[] authors, String journal,int volume, int page,int nmb_citations,int DOI) {
 		
-		//se a PUB ainda n·o estiver na base de dados
+		//se a PUB ainda n√°o estiver na base de dados
 		if( isThisPubValid(DOI) ) {
 			write_new_pub( title,  year, authors,  journal, volume,  page, nmb_citations, DOI);
 			return true;
 		}else {
-		// Se o DOI j· estiver no ficheiro n„o escreve a publicaÁ„o no ficheiro
+		// Se o DOI j√° estiver no ficheiro n√£o escreve a publica√ß√£o no ficheiro
 			return false;
 		}
 		
 	}
 	
-
+	public void removePub(int DOI) throws IOException
+	{
+		//este emtodo remove uma das linhas  ejunda todo o texto
+		//ex:
+		//inicio:      pub1   					pub1
+		//			   pub2 removeline------>   pub3
+		//             pub3
+		//filer obtem todas as linhas que n√£o tenham o DOI que queremos eliminar
+		// collect coloca todas as linhas do novo ficheiro em uma lista
+		//finalmente coloca todas as publica√ß√µes guardadas na lista no novo ficheiro
+		
+		
+		
+	    File file = new File(this.file_publication);
+	    List<String> out = Files.lines(file.toPath())
+	    					//a linha que acabamos √© a que esta guardada no ficheiro com o DOI
+	    					//ex: nome/year/author1!author2!/journal/volume/page/nm_citations/doi
+	                        .filter(line -> !line.endsWith("/"+DOI))
+	                        
+	                        .collect(Collectors.toList());
+	    
+	    //usando TRUNCATE os conteudos anteriores dos ficheiros s√£o subsituidos 
+	    Files.write(file.toPath(), out, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
+	    System.out.println("FILE_UPDATED");
+	    
+	}
+	 
 
 
 
