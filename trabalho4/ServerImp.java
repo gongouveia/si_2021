@@ -17,7 +17,7 @@ public class ServerImp extends UnicastRemoteObject implements Interface{
 	
 	int[] performanceVar = new int[3];
 
-	//construtor. Inicialização do objeto de escrita em ficheiros
+	//construtor. InicializaÃ§Ã£o do objeto de escrita em ficheiros
 	public ServerImp( ReadWrite RWfile ) throws RemoteException
 	{
 		this.RWfile= RWfile;
@@ -31,7 +31,7 @@ public class ServerImp extends UnicastRemoteObject implements Interface{
 		
 		for (Client i : clientDB.values()) {
 			//se algum dos clientes tema mesma password e mesmo email que os inseridos no login in
-			//então o log in é valido 
+			//entÃ£o o log in Ã© valido 
 			if (mail.equals(i.getEmail()) && password.equals(i.getPassword()) ) {
 				System.out.println("Valid Login");
 
@@ -44,11 +44,11 @@ public class ServerImp extends UnicastRemoteObject implements Interface{
 	
 	 //rotina de criar a a conta
 	//para a conta ser validada tem que passar nos seguintes requesitos:
-	//1- não existir nenhum email igual ao inserido na base de dados
+	//1- nÃ£o existir nenhum email igual ao inserido na base de dados
 	//2- o email inserido conter @mail 
 	public int logUpRoutine(String newname, String newmail,String newpassword, String newaff) throws RemoteException {
 
-		//o email é a chave unica de cada cliente, não pode estar repetida na base de dados
+		//o email Ã© a chave unica de cada cliente, nÃ£o pode estar repetida na base de dados
 
 			System.out.println("Loggin in");
 			
@@ -61,7 +61,7 @@ public class ServerImp extends UnicastRemoteObject implements Interface{
 			for (Client i : clientDB.values()) {
 				
 				if (i.getEmail().equals(newmail) ) {
-					//se já existir um cliente registado com o mesmo mail 
+					//se jÃ¡ existir um cliente registado com o mesmo mail 
 					System.out.println("email repeated\n");
 					System.out.println("DEBUG3");
 					return 1;
@@ -79,11 +79,11 @@ public class ServerImp extends UnicastRemoteObject implements Interface{
 			//Client newclient = new Client(newname,newmail,newpassword,newaff);	
 			//escreve na data base
 			RWfile.write_new_client(newname, newmail, newpassword, newaff);
-			//a data base é actualizada
+			//a data base Ã© actualizada
 			clientDB = RWfile.clientDB_updatefromfile(clientDB);
 
 			System.out.println("Acc created");
-			       //depende se queres que depois de fazer conta volte ao menu inicial ou não
+			       //depende se queres que depois de fazer conta volte ao menu inicial ou nÃ£o
 			return 2;
 
 		}else {
@@ -116,7 +116,7 @@ public class ServerImp extends UnicastRemoteObject implements Interface{
 		
 	}
 	
-	//funcao para adicionar pubs candidatas a um usuário 
+	//funcao para adicionar pubs candidatas a um usuÃ¡rio 
 
 	public Client requestPubs(Client user) throws RemoteException {
 		//Dar update da stack geral que tem todas as pubs ao ler um ficheiro que contem todas as pubs.
@@ -131,12 +131,12 @@ public class ServerImp extends UnicastRemoteObject implements Interface{
 		//limpar a stack auxiliar
 		authorPubs.clear();
 		
-		//nome do usuário atual para verificar quais pubs são candidatas
+		//nome do usuÃ¡rio atual para verificar quais pubs sÃ£o candidatas
 		currentAuthor = user.getName();
 		//stack auxiliar para receber pubs com o nome do usuario
 		
 		System.out.println("Currente Author: " + currentAuthor);
-		//Loop para atualizar a publicações do autor
+		//Loop para atualizar a publicaÃ§Ãµes do autor
 		//itera sobre cada objeto pub na base de dados geral
 		for (Pub selectedPub : this.pubDB.values()) {
 			//de seguida, itera sobre cada um dos autores da pub
@@ -153,7 +153,7 @@ public class ServerImp extends UnicastRemoteObject implements Interface{
 					//System.out.println("Same author? " + author.equals(currentAuthor));
 						if(author.equals(currentAuthor) ) {
 							
-							//se a pub nao estiver nas pubs já aceites do utilizador
+							//se a pub nao estiver nas pubs jÃ¡ aceites do utilizador
 							boolean pubNotIn = true;
 							for(Pub auxPub : user.getPubs()) {
 								if(auxPub.getDOI() == selectedPub.getDOI()) {
@@ -192,13 +192,13 @@ public class ServerImp extends UnicastRemoteObject implements Interface{
 		int max;
 		authorPubs = user.getPubs();
 		/*
-		 * Apresentar as publicaçoes ao utilizador:
-		 * - Por ordem crescente de citaçoes
+		 * Apresentar as publicaÃ§oes ao utilizador:
+		 * - Por ordem crescente de citaÃ§oes
 		 * - Por ordem descrescente de ano
 		*/
 	
 	
-		/*1Âº Caso: Ordenar por ano
+		/*1Ã‚Âº Caso: Ordenar por ano
 		 *
 		 *ALgoritmo para ordenar por ano.
 		 *Primeiro escolhe se uma pub e depois verifica-se a 
@@ -233,7 +233,7 @@ public class ServerImp extends UnicastRemoteObject implements Interface{
 		} else {
 
 	
-			/*2Âº Caso: Ordenar por citacao
+			/*2Ã‚Âº Caso: Ordenar por citacao
 			 *
 			 *ALgoritmo para ordenar por citacao.
 			 *Primeiro escolhe se uma pub e depois verifica-se a 
@@ -314,7 +314,7 @@ public class ServerImp extends UnicastRemoteObject implements Interface{
 		
 		
 		
-		//percorrer os autores da publicacao com o doi definido pelo o usu�rio
+		//percorrer os autores da publicacao com o doi definido pelo o usuário
 		for(String authorIndex : pubDB.get(DOI).getAuthors()) {
 			//se o nome do usuario for igual a um dos autores
 			System.out.println("\n\n\nChecking if there is any pub this author can remove.");
@@ -335,7 +335,7 @@ public class ServerImp extends UnicastRemoteObject implements Interface{
 					}
 				}
 				//retira-se a pub da stack do usuario
-				// a stack de request � atualizada sempre que � chamada, n�o � necess�rio remover
+				// a stack de request é atualizada sempre que é chamada, não é necessário remover
 				user.userPubs.remove(removeIndex);
 				
 				System.out.println("File_Updated. Pub removed.\n\n\n");
@@ -351,6 +351,10 @@ public class ServerImp extends UnicastRemoteObject implements Interface{
 		}
 		
 		return user;
+	}
+	public boolean isThisClientRegistred(String userEmail) throws RemoteException, IOException {
+		
+		return RWfile.clientRegistred(userEmail);
 	}
 	
 	
