@@ -1,5 +1,6 @@
 package si_2021.trabalho4;
  
+import java.io.IOException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
@@ -20,4 +21,5 @@ public interface Interface extends Remote{
 	
 	public boolean addNewPub(String title, String journal, String[] authors, int[] numbers) throws RemoteException;
 	
+	public Client removePub(Client user, int DOI) throws RemoteException, IOException;
 }

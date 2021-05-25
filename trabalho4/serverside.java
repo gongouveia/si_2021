@@ -34,14 +34,7 @@ public class serverside
 			
 			registry.bind("Implement", remoteObject);
 				
-			
-			
-			
-		
-			
-			
-			
-			
+
 		}	
 		catch (Exception error)
 		{

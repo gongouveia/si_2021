@@ -8,12 +8,11 @@ import java.io.FileWriter;
 import java.util.HashMap;
 
 import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
 
-
-
+import java.util.stream.Collectors;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
+import java.util.List;
 
 
 public class ReadWrite {
@@ -267,7 +266,32 @@ public class ReadWrite {
 		
 	}
 	
+	public void removePub(int DOI) throws IOException
+	{
+		//este emtodo remove uma das linhas  ejunda todo o texto
+		//ex:
+		//inicio:      pub1   					pub1
+		//			   pub2 removeline------>   pub3
+		//             pub3
+		//filer obtem todas as linhas que não tenham o DOI que queremos eliminar
+		// collect coloca todas as linhas do novo ficheiro em uma lista
+		//finalmente coloca todas as publicações guardadas na lista no novo ficheiro
 
+
+
+	    File file = new File(this.file_publication);
+	    List<String> out = Files.lines(file.toPath())
+	    					//a linha que acabamos é a que esta guardada no ficheiro com o DOI
+	    					//ex: nome/year/author1!author2!/journal/volume/page/nm_citations/doi
+	                        .filter(line -> !line.endsWith("/"+DOI))
+
+	                        .collect(Collectors.toList());
+
+	    //usando TRUNCATE os conteudos anteriores dos ficheiros são subsituidos 
+	    Files.write(file.toPath(), out, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
+	    System.out.println("FILE_UPDATED");
+
+	}
 
 
 

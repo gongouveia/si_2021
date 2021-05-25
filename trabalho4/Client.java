@@ -11,11 +11,13 @@ public class Client implements Serializable {
 	//
 	private String email, password,name,affiliation;
 	
-	int citationScore;
+	int[] citationScore = new int[3];
 	//stack de pubs candidatas
 	Stack<Pub> requestPubs = new Stack<Pub>();
 	//stack de pubs já aceites pelo o utilizador
 	Stack<Pub> userPubs = new Stack<Pub>();
+	
+	boolean removedPub = false;
 	//constructor 
 	public Client(String name, String email, String password, String affiliation)
 	{

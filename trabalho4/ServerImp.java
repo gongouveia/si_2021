@@ -1,5 +1,6 @@
 package si_2021.trabalho4;
 
+import java.io.IOException;
 import java.rmi.RemoteException; 
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
@@ -14,7 +15,7 @@ public class ServerImp extends UnicastRemoteObject implements Interface{
 	Stack<Pub> authorPubs = new Stack<Pub>();
 	Stack<Pub> pubsOrder = new Stack<Pub>();
 	
-	int performanceVar;
+	int[] performanceVar = new int[3];
 
 	//construtor. Inicializa√ß√£o do objeto de escrita em ficheiros
 	public ServerImp( ReadWrite RWfile ) throws RemoteException
@@ -123,10 +124,10 @@ public class ServerImp extends UnicastRemoteObject implements Interface{
 		this.pubDB.clear();
 		
 		this.pubDB = RWfile.pubDB_updatefromfile(this.pubDB);
-		
+		/*
 		for(Pub i : pubDB.values()) {
 			i.print();
-		}
+		}*/
 		
 		//limpar a stack auxiliar
 		authorPubs.clear();
@@ -149,8 +150,8 @@ public class ServerImp extends UnicastRemoteObject implements Interface{
 				// null.equals nao funciona
 					
 					if(author != null) {
-					System.out.println("Author: "+ author + " Pub: " + selectedPub.getTitle());
-					System.out.println("Same author? " + author.equals(currentAuthor));
+					//System.out.println("Author: "+ author + " Pub: " + selectedPub.getTitle());
+					//System.out.println("Same author? " + author.equals(currentAuthor));
 						if(author.equals(currentAuthor) ) {
 							
 							//se a pub nao estiver nas pubs j√° aceites do utilizador
@@ -274,20 +275,86 @@ public class ServerImp extends UnicastRemoteObject implements Interface{
 		return user;
 	}
 
-	public void performance(Client user) throws RemoteException {
-		performanceVar = 0;
-		
-		for(Pub i : user.getPubs()) {
-			performanceVar += i.getCitations();
+	public Client performance(Client user, int in) throws RemoteException {
+		for (int k = 0; k < performanceVar.length; k++) {
+			performanceVar[k] = 0;
 		}
 		
+		int pubScore = 0;
+		for(Pub i : user.getPubs()) {
+			pubScore = i.getCitations();
+			//Total citations
+			performanceVar[0] += pubScore;
+			
+			if(pubScore >= in) {
+				performanceVar[1] += pubScore;
+			}
+			
+			if(pubScore >= 10) {
+				performanceVar[2] += pubScore;
+			}
+		}
+		
+		
 		user.citationScore = performanceVar;
+		
+		return user;
 	}
+	
 	
 	public boolean addNewPub(String title, String journal, String[] authors, int[] numbers) throws RemoteException {
 		
 		return RWfile.add_pub(title, numbers[0], authors, journal, numbers[2], numbers[1], numbers[4], numbers[3]);
 	}
+	
+	public Client removePub(Client user, int DOI) throws RemoteException, IOException{
+		//indicador para que o cliente sabia se uma pub foi removida
+		user.removedPub = false;
+		//updata do hashmap com todas as pubs
+		this.pubDB = RWfile.pubDB_updatefromfile(this.pubDB);
+		
+		
+		
+		//percorrer os autores da publicacao com o doi definido pelo o usu·rio
+		for(String authorIndex : pubDB.get(DOI).getAuthors()) {
+			//se o nome do usuario for igual a um dos autores
+			System.out.println("Checking if there is any pub this author can remove.");
+			System.out.println(authorIndex + " " + user.getName());
+			if(user.getName() ==  authorIndex) {
+				
+				System.out.println("It's the same author. Removing pub.");
+				//remove-se a entry do ficheiro
+				RWfile.removePub(DOI);
+				//remove-se da base dados
+				this.pubDB.remove(DOI);
+
+				//Procura-se o index da publicacao na stack do usuario
+				int removeIndex = 0;
+				for(int m = 0; m < user.userPubs.size(); m++) {
+					if(DOI == user.userPubs.get(m).getDOI()) {
+						removeIndex = m;
+					}
+				}
+				//retira-se a pub da stack do usuario
+				// a stack de request È atualizada sempre que È chamada, n„o È necess·rio remover
+				user.userPubs.remove(removeIndex);
+				
+				System.out.println("File_Updated. Pub removed.");
+				user.removedPub = true;
+				break;
+			} 
+			
+		}
+		
+		if(!user.removedPub){
+			
+			System.out.println("File unchanged. No pub was removed.");
+		}
+		
+		return user;
+	}
+	
+	
 
 }
 		

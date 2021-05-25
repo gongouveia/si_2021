@@ -5,6 +5,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
 import java.util.Scanner;
+//import java.io.IOException;
 import java.rmi.*;  
 
 
@@ -286,7 +287,7 @@ public class clientside {
 						//apresenta as pubs
 						
 						printPublications(user.requestPubs());
-						System.out.println("Select pubs. Example: 1 2 3 12 45 334");
+						System.out.println("Select publications you want to add.\nExample: 1 2 3 12 45 334");
 						System.out.println("Press X to get out.");
 						correctInput = false;
 					
@@ -326,6 +327,10 @@ public class clientside {
 									//passagem de texto para int, o utilizador comeca por 1 e nao em 0
 									textToNumber = Integer.parseInt(i) - 1;
 									//o numero e inserido numa stack
+									if(textToNumber > user.requestPubs.size() - 1) {
+										System.out.println("Dont pick a number bigger than:" + user.requestPubs.size());
+										break;
+									}
 									numberInt.push(textToNumber);
 								} catch (Exception e) {
 										System.out.println("Please select a correct number.");
@@ -358,26 +363,62 @@ public class clientside {
 	
 	
 			case "4":
+				System.out.println("Remove a publication\n You can only remove publications that you added with your name.\n");
+				printPublications(user.userPubs);
+				
+				System.out.println("Pick a DOI number or Press X to get out: ");
+				
+				
+				while(true) {
+					try {
+						input = sc.nextLine();
+						if(input.toUpperCase().equals("X")) {
+							break;
+						}
+						
+						int doi = Integer.parseInt(input);
+						user = interfaceServer.removePub(user, doi);
+						
+					} catch (Exception e) {
+					
+						System.out.println("Select a correct DOI number.");
+					} 
+					
+
+					if(user.removedPub) {
+						System.out.println("Your publication was removed.");
+						break;
+					} else {
+						System.out.println("Pick a correct DOI number. You must be the author of the pub.");
+						
+					}
+					
+				}
+				
+				
+				
 				break;
 	
 	
 			case "5":
 				
-					System.out.println("Perfomance metric");
-					System.out.println("Pick your H metric number: ");
-					while(true) {
-						try {
-							int H = Integer.parseInt(sc.nextLine());
-							break;
-						} catch (Exception e) {
-							System.out.println("Use integer numbers for the H metric.");
-						}
+				System.out.println("Perfomance metric");
+				System.out.println("Pick your H metric number: ");
+				int H = 0;
+				while(true) {
+					try {
+						H = Integer.parseInt(sc.nextLine());
+						break;
+					} catch (Exception e) {
+						System.out.println("Use integer numbers for the H metric.");
 					}
-					
-					user = interfaceServer.performance(user, H);
-						
 				}
 				
+				user = interfaceServer.performance(user, H);
+					
+				System.out.println("Total citations:" + user.citationScore[0]);
+				System.out.println("H - metric:" + user.citationScore[1]);
+				System.out.println("Hyundai - i10 - metric:" + user.citationScore[2]);
 
 				
 				break;	
