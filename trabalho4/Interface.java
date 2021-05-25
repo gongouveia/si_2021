@@ -16,7 +16,7 @@ public interface Interface extends Remote{
 	
 	public Client printPubs(Client user, boolean order) throws RemoteException;
 	
-	public void performance(Client user) throws RemoteException;
+	public Client performance(Client user, int in) throws RemoteException;
 	
 	public boolean addNewPub(String title, String journal, String[] authors, int[] numbers) throws RemoteException;
 	

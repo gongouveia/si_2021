@@ -286,7 +286,7 @@ public class ServerImp extends UnicastRemoteObject implements Interface{
 	
 	public boolean addNewPub(String title, String journal, String[] authors, int[] numbers) throws RemoteException {
 		
-		return RWfile.write_new_pub(title, numbers[0], authors, journal, numbers[2], numbers[1], numbers[4], numbers[3], pubDB);
+		return RWfile.add_pub(title, numbers[0], authors, journal, numbers[2], numbers[1], numbers[4], numbers[3]);
 	}
 
 }

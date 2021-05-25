@@ -244,18 +244,24 @@ public class clientside {
 				String DOi = sc.nextLine();
 				System.out.println("Citations:");
 				String citationsNumb = sc.nextLine();
-				
+				boolean pubAdd = false;
 				try {
 					addNewPubNumbers[0] = Integer.parseInt(year);
 					addNewPubNumbers[1] = Integer.parseInt(page);
 					addNewPubNumbers[2] = Integer.parseInt(volume);
 					addNewPubNumbers[3] = Integer.parseInt(DOi);
 					addNewPubNumbers[4] = Integer.parseInt(citationsNumb);
-					interfaceServer.addNewPub(title, journal, authors, addNewPubNumbers);
+					pubAdd = interfaceServer.addNewPub(title, journal, authors, addNewPubNumbers);
 					
 				} catch (Exception e) {
 					System.out.println("Your input is invalid. Use numbers for year, page, volume, DOi and citationsNumb");
 					System.out.println("");
+				}
+				
+				if(pubAdd) {
+					System.out.println("Publication added.");
+				} else {
+					System.out.println("Use a different DOI number and your name.");
 				}
 				
 				break;
@@ -356,8 +362,24 @@ public class clientside {
 	
 	
 			case "5":
-				interfaceServer.performance(user);
-				System.out.println("Performance: " + user.citationScore);
+				
+					System.out.println("Perfomance metric");
+					System.out.println("Pick your H metric number: ");
+					while(true) {
+						try {
+							int H = Integer.parseInt(sc.nextLine());
+							break;
+						} catch (Exception e) {
+							System.out.println("Use integer numbers for the H metric.");
+						}
+					}
+					
+					user = interfaceServer.performance(user, H);
+						
+				}
+				
+
+				
 				break;	
 	
 	

@@ -133,49 +133,6 @@ public class ReadWrite {
 		}
 	}
 
-	public boolean write_new_pub( String title, int year, String[] authors, String journal,int volume, int page,int nmb_citations,int DOI,HashMap<Integer, Pub> pubDB) {
-		try {
-			
-			
-			
-			//se já existir um DOI a publicação não pode ser adicionada
-			for (int DOIvalues : pubDB.keySet()) {
-				if (DOI==DOIvalues){
-					return false;				
-				}
-			}
-			
-			//se a publicação puder ser adicionada é adicionada ao ficheiro		
-			BufferedWriter bw_pubs = null;
-			//bw_pubs = new BufferedWriter(new FileWriter(this.file_publication, true));
-			bw_pubs = new BufferedWriter(new FileWriter(this.file_publication, true));
-			String author_string="";
-			for(String i:authors) {
-				author_string+=i.trim()+"!";
-			}
-
-			//da append de uma nova pubicação no ficheiro
-			bw_pubs.write(title+"/"+year+"/"+author_string+"/"+journal+"/"+volume+"/"+page+"/"+nmb_citations+"/"+DOI);
-			bw_pubs.newLine();
-			bw_pubs.flush();
-			//fecha streams
-			
-			if ( bw_pubs != null) try {
-
-				bw_pubs.close();
-			} catch (IOException ioe2) {
-				// just ignore it
-			}
-			//System.out.println("Successfully wrote to the file.");
-			//System.out.println("publicationDB updated");
-			//System.out.println("Publication already exists");
-			//System.out.println("publicationDB updated");	
-			} catch (IOException e) {
-			System.out.println("An error occurred.");
-			e.printStackTrace();
-		}
-		return true;
-	}
 	
 	public  void fileClear(String file) {
 		File myObj = new File(file ); 
@@ -231,6 +188,85 @@ public class ReadWrite {
 	}
 
 
+	public boolean isThisPubValid(int DOI) {
+		try {
+			File myObj = new File(this.file_publication);
+			Scanner myReader = new Scanner(myObj);
+			while (myReader.hasNextLine()) {
+				String data = myReader.nextLine();
+				String[] dataStrip = data.split("/");
+				int DOI_toCompare = Integer.parseInt(dataStrip[dataStrip.length-1]);
+				if (DOI_toCompare==DOI) {
+					myReader.close();
+					//o DOI que se quer inserir está na base de dados
+					return false;
+				}
+			}
+			myReader.close();	
+			System.out.println("clientDB-updated");
+		}catch (FileNotFoundException e) {
+			System.out.println("An error occurred.\n");
+			e.printStackTrace();
+		}
+		//o DOI que ser quer inserir não esta na base de dados
+		return true;
+	}
+
+
+
+	public void write_new_pub( String title, int year, String[] authors, String journal,int volume, int page,int nmb_citations,int DOI) {
+
+		try {
+
+			
+				//se a publicação puder ser adicionada é adicionada ao ficheiro		
+				BufferedWriter bw_pubs = null;
+				bw_pubs = new BufferedWriter(new FileWriter(this.file_publication, true));
+
+				
+				String author_string="";
+				
+				for(String i:authors) {
+					author_string+=i.trim()+"!";
+				}
+				//da append de uma nova pubicação no ficheiro
+				
+				bw_pubs.write(title+"/"+year+"/"+author_string+"/"+journal+"/"+volume+"/"+page+"/"+nmb_citations+"/"+DOI);
+				bw_pubs.newLine();
+				bw_pubs.flush();
+				//fecha streams
+				if ( bw_pubs != null) try {
+
+					bw_pubs.close();
+				} catch (IOException ioe2) {
+					// just ignore it
+				}
+
+
+		} catch (IOException e) {
+			System.out.println("An error occurred.");
+			e.printStackTrace();
+		}
+
+	}
+
+
+
+
+
+	public boolean add_pub( String title, int year, String[] authors, String journal,int volume, int page,int nmb_citations,int DOI) {
+		
+		//se a PUB ainda náo estiver na base de dados
+		if( isThisPubValid(DOI) ) {
+			write_new_pub( title,  year, authors,  journal, volume,  page, nmb_citations, DOI);
+			return true;
+		}else {
+		// Se o DOI já estiver no ficheiro não escreve a publicação no ficheiro
+			return false;
+		}
+		
+	}
+	
 
 
 
