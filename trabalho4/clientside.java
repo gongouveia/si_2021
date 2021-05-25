@@ -30,7 +30,7 @@ public class clientside {
 		
 		Scanner sc = new Scanner(System.in);
 	
-		//declaração de um objeto cliente que contem pubs
+		//declaraÃ§Ã£o de um objeto cliente que contem pubs
 		Client user;
 		
 		System.out.println("***********");
@@ -67,22 +67,34 @@ public class clientside {
 							System.out.println("insert password");
 							String pass_login= sc.nextLine();
 							//procura por todos os clientes da base de dados
-							
 							 option_menu1 = interfaceServer.loginVerify(user_login,pass_login);
-							 //option_menu1 é TRUE se o login for invalido 
-							 //option_menu1 é FALSE se o login for valido 
+							 //option_menu1 Ã© TRUE se o login for invalido 
+							 //option_menu1 Ã© FALSE se o login for valido 
 							 if (option_menu1) {
+								 
+								 
+								 if(interfaceServer.isThisClientRegistred(user_login)) {
+									 System.out.println("Your email is valid. Password incorrect");
+								 }else {
+									 System.out.println("Your email is not yet registred in database. Sgn Up");
+								 }
+								 
+								 
+								 
 								 System.out.println("Invalid Log In\n");
 								 }else {
 									 System.out.println("Valid Log In\n");
-									 
 									 option_menu2 = true;
 								 }
 							break;
 							
+							
+							
+							
+							
 						}
 						case "2": {
-							//cliente não quer fazer registo nem log in
+							//cliente nÃ£o quer fazer registo nem log in
 							System.out.println("Disconnected \n");
 							end_connection = true;
 							option_menu1 = false;
@@ -106,9 +118,9 @@ public class clientside {
 							int option_logUp = interfaceServer.logUpRoutine(newname, newmail, newpassword, newaff);
 							
 							//no logUp existem 3 casos que podem acontecer
-							//1-o email inserido pelo cliente é repetido e não é valido
-							//2-a conta é criada com sucesso  eo cliente é adicionado ao ficheiro
-							//3-o email inserido pelo ciente não tem @mail no nome, ou seja tem um formato não valido
+							//1-o email inserido pelo cliente Ã© repetido e nÃ£o Ã© valido
+							//2-a conta Ã© criada com sucesso  eo cliente Ã© adicionado ao ficheiro
+							//3-o email inserido pelo ciente nÃ£o tem @mail no nome, ou seja tem um formato nÃ£o valido
 							switch (option_logUp) {
 							
 							case 1:
@@ -182,23 +194,23 @@ public class clientside {
 			
 			//menu apresnetado
 			System.out.println("\n\nMENU USER:");
-			System.out.println("1-Minhas publica��es");
-			System.out.println("2-Introduzir publica��es");
-			System.out.println("3-Publica��es candidatas");
-			System.out.println("4-Remover publica��es");
+			System.out.println("1-Minhas publicações");
+			System.out.println("2-Introduzir publicações");
+			System.out.println("3-Publicações candidatas");
+			System.out.println("4-Remover publicações");
 			System.out.println("5-My Performance");
 			System.out.println("6-Exit\n");
 			
-			//É pedido ao utilizador o que deseja
+			//Ã‰ pedido ao utilizador o que deseja
 			input = sc.nextLine();
 			
-			//o input é recebido e analisado
+			//o input Ã© recebido e analisado
 			 switch(input){
 			 
 
 			case "1":
 				
-				System.out.println("Listar publica��es:\n 1 - Por ano\n 2 - por cita��es");
+				System.out.println("Listar publicações:\n 1 - Por ano\n 2 - por citações");
 				input = sc.nextLine();
 				
 				switch(input) {
@@ -252,8 +264,25 @@ public class clientside {
 					addNewPubNumbers[2] = Integer.parseInt(volume);
 					addNewPubNumbers[3] = Integer.parseInt(DOi);
 					addNewPubNumbers[4] = Integer.parseInt(citationsNumb);
-					pubAdd = interfaceServer.addNewPub(title, journal, authors, addNewPubNumbers);
 					
+					
+					//itera por todos os autore da publicação
+					for (String i: authors) {
+						System.out.println("0"+i.trim()+"0"+" o user logado é:"+user_login) ;
+						
+		
+						//caso um dos autores da publicação seja o cliente logado no momento pode adicionar  apublicação
+					if  (interfaceServer.whosClient(user_login).getName().equals(i.trim())) {
+						//é possivel adicionar uma publicação se:
+						//-> caso o DOI não exista já na base de dados (publicação repetida 
+						
+						pubAdd = interfaceServer.addNewPub(title, journal, authors, addNewPubNumbers);
+						break;
+						}else {
+							System.out.println("ERROR This publication is not yours!\n");
+						}
+					}
+
 				} catch (Exception e) {
 					System.out.println("Your input is invalid. Use numbers for year, page, volume, DOi and citationsNumb");
 					System.out.println("");
@@ -266,6 +295,7 @@ public class clientside {
 				}
 				
 				break;
+					 
 	
 	
 			case "3":
@@ -275,10 +305,10 @@ public class clientside {
 					
 					
 					
-					//impressão de pubs candidatas
+					//impressÃ£o de pubs candidatas
 					int counter = 1;
 					
-					//controlo de entradas corretas. Prende o utilizador até este 
+					//controlo de entradas corretas. Prende o utilizador atÃ© este 
 					//escolher um input adequado
 					boolean correctInput = false;
 					
@@ -308,9 +338,9 @@ public class clientside {
 							correctInput = true;
 							
 						} else {
-							//separação dos números por espaco
+							//separaÃ§Ã£o dos nÃºmeros por espaco
 							String[] numberString = input.split(" ");
-							//conversão de texto para inteiro
+							//conversÃ£o de texto para inteiro
 							int textToNumber;
 							//stack para enviar ao server
 							Stack<Integer> numberInt = new Stack<Integer>();
@@ -318,8 +348,8 @@ public class clientside {
 							//contador para verificar se todos os numeros sao convertidos
 							counter = 0;
 							
-							//cada texto é convertido num inteiro. 
-							//É detetado o erro de inputs q nao pode ser convertidos
+							//cada texto Ã© convertido num inteiro. 
+							//Ã‰ detetado o erro de inputs q nao pode ser convertidos
 							for( String i : numberString) {
 								//esperamos por erros
 								
@@ -346,7 +376,7 @@ public class clientside {
 							
 							if(counter == numberInt.size()) {
 								for(int j : numberInt) {
-									//entao os objetos pubs são adicionados numa stack auxiliar
+									//entao os objetos pubs sÃ£o adicionados numa stack auxiliar
 									user.requestPubs().get(j).print();
 									auxPubs.push(user.requestPubs().get(j));
 								}
