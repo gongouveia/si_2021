@@ -90,9 +90,6 @@ public class Client implements Serializable {
 	}
 	//update da stack de pubs candidatas
 	public void requestPubsUpdate(Stack<Pub> stack) {
-		for(Pub i : stack) {
-			i.print();
-		}
 		this.requestPubs = stack;
 	}
 

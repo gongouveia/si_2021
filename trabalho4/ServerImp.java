@@ -50,17 +50,16 @@ public class ServerImp extends UnicastRemoteObject implements Interface{
 
 		//o email √© a chave unica de cada cliente, n√£o pode estar repetida na base de dados
 
-			System.out.println("DEBUG1");
+			System.out.println("Loggin in");
 			
 			clientDB = RWfile.clientDB_updatefromfile(clientDB);
 		
-			System.out.println("DEBUG23");
+			System.out.println("client hashmap updated from file. Server confirms it.");
 			
 			if (clientDB.size() > 0) {
 				
 			for (Client i : clientDB.values()) {
 				
-				System.out.println("DEBU2");
 				if (i.getEmail().equals(newmail) ) {
 					//se j√° existir um cliente registado com o mesmo mail 
 					System.out.println("email repeated\n");
@@ -70,7 +69,7 @@ public class ServerImp extends UnicastRemoteObject implements Interface{
 				}
 				}
 			}
-			System.out.println("DEBUG4");
+			
 		// It returns -1 if substring is not found  
 		//se @mail estiver na string entra no ciclo
 		//adiciona o cliente ao ficheiro 
@@ -318,8 +317,8 @@ public class ServerImp extends UnicastRemoteObject implements Interface{
 		//percorrer os autores da publicacao com o doi definido pelo o usu·rio
 		for(String authorIndex : pubDB.get(DOI).getAuthors()) {
 			//se o nome do usuario for igual a um dos autores
-			System.out.println("Checking if there is any pub this author can remove.");
-			System.out.println(authorIndex + " " + user.getName());
+			System.out.println("\n\n\nChecking if there is any pub this author can remove.");
+			
 			if(user.getName().equals(authorIndex)) {
 				
 				System.out.println("It's the same author. Removing pub.");
@@ -339,7 +338,7 @@ public class ServerImp extends UnicastRemoteObject implements Interface{
 				// a stack de request È atualizada sempre que È chamada, n„o È necess·rio remover
 				user.userPubs.remove(removeIndex);
 				
-				System.out.println("File_Updated. Pub removed.");
+				System.out.println("File_Updated. Pub removed.\n\n\n");
 				user.removedPub = true;
 				break;
 			} 
@@ -348,7 +347,7 @@ public class ServerImp extends UnicastRemoteObject implements Interface{
 		
 		if(!user.removedPub){
 			
-			System.out.println("File unchanged. No pub was removed.");
+			System.out.println("File unchanged. No pub was removed.\n\n\n");
 		}
 		
 		return user;

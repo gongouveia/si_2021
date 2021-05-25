@@ -327,8 +327,8 @@ public class clientside {
 									//passagem de texto para int, o utilizador comeca por 1 e nao em 0
 									textToNumber = Integer.parseInt(i) - 1;
 									//o numero e inserido numa stack
-									if(textToNumber > user.requestPubs.size() - 1) {
-										System.out.println("Dont pick a number bigger than:" + user.requestPubs.size());
+									if(textToNumber < 1 || textToNumber > user.requestPubs.size() - 1) {
+										System.out.println("Pick a number between 0 and " + user.requestPubs.size() + ".");
 										break;
 									}
 									numberInt.push(textToNumber);
