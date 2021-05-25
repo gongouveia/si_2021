@@ -20,4 +20,6 @@ public interface Interface extends Remote{
 	
 	public boolean addNewPub(String title, String journal, String[] authors, int[] numbers) throws RemoteException;
 	
+	public void removePub(int DOI) throws IOException;
+	
 }
