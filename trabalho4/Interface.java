@@ -1,10 +1,8 @@
 package si_2021.trabalho4;
-import java.rmi.*;  
+ 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.rmi.server.*;  
+
 
 public interface Interface extends Remote{
 
@@ -12,12 +10,14 @@ public interface Interface extends Remote{
 	
 	public int logUpRoutine(String newname, String newmail,String newpassword, String newaff) throws RemoteException;
 	
-	public Client whosclient(String passowrd) throws RemoteException ;
+	public Client whosClient(String passowrd) throws RemoteException ;
 		
-	public void requestPubs(Client user);
+	public Client requestPubs(Client user) throws RemoteException;
 	
-	public void printPubs(Client user, boolean order);
+	public Client printPubs(Client user, boolean order) throws RemoteException;
 	
-	public void performance(Client user);
+	public void performance(Client user) throws RemoteException;
+	
+	public boolean addNewPub(String title, String journal, String[] authors, int[] numbers) throws RemoteException;
 	
 }

@@ -6,7 +6,7 @@ import java.util.*;
 
 public class ServerImp extends UnicastRemoteObject implements Interface{
 
-	private HashMap<String, Pub> pubDB = new HashMap<String, Pub>();
+	private HashMap<Integer, Pub> pubDB = new HashMap<Integer, Pub>();
 	private HashMap<String, Client> clientDB = new HashMap<String, Client>();
 	private ReadWrite RWfile;
 	
@@ -76,7 +76,7 @@ public class ServerImp extends UnicastRemoteObject implements Interface{
 			
 		 if ((newmail.indexOf("@mail")!=-1)) {
 
-			Client newclient = new Client(newname,newmail,newpassword,newaff);	
+			//Client newclient = new Client(newname,newmail,newpassword,newaff);	
 			//escreve na data base
 			RWfile.write_new_client(newname, newmail, newpassword, newaff);
 			//a data base é actualizada
@@ -97,26 +97,37 @@ public class ServerImp extends UnicastRemoteObject implements Interface{
 	
 	
 	//inserindo o email de um cliente retorna o cliente com as suas caracterisitcas
-	public Client whosclient(String email) throws RemoteException  {
+	public Client whosClient(String email) throws RemoteException  {
+	
 		clientDB = RWfile.clientDB_updatefromfile(clientDB);
+		
 		Client isThisClient = null;
+		
 		//procura por todos os nomes na base de dados
 		for (String i : clientDB.keySet()) {
 			//obtem os dados do cliente alocado a um certo username
 			// se o email do cliente for igual ao que insrermimos
 			if (clientDB.get(i).getEmail().equals(email)) {
 				//retorna o cliente
-				isThisClient =clientDB.get(i);
+				isThisClient = clientDB.get(i);
 			}
 		}
 		return isThisClient;
 		
 	}
 	
-	//funcao para adicionar pubs candidatas a um usuário
-	public void requestPubs(Client user) {
+	//funcao para adicionar pubs candidatas a um usuário 
+
+	public Client requestPubs(Client user) throws RemoteException {
 		//Dar update da stack geral que tem todas as pubs ao ler um ficheiro que contem todas as pubs.
-		pubDB = RWfile.pubDB_updatefromfile(pubDB);
+		this.pubDB.clear();
+		
+		this.pubDB = RWfile.pubDB_updatefromfile(this.pubDB);
+		
+		for(Pub i : pubDB.values()) {
+			i.print();
+		}
+		
 		//limpar a stack auxiliar
 		authorPubs.clear();
 		
@@ -127,16 +138,21 @@ public class ServerImp extends UnicastRemoteObject implements Interface{
 		System.out.println("Currente Author: " + currentAuthor);
 		//Loop para atualizar a publicações do autor
 		//itera sobre cada objeto pub na base de dados geral
-		for (Pub selectedPub : pubDB.values()) {
+		for (Pub selectedPub : this.pubDB.values()) {
 			//de seguida, itera sobre cada um dos autores da pub
 			
 			for(String author : selectedPub.getAuthors())
+				
+			
 				//se a var author for nula, entao ignora o codigo
 				// tem de ser dois if's separados, senao da erro
 				// null.equals nao funciona
 					
 					if(author != null) {
+					System.out.println("Author: "+ author + " Pub: " + selectedPub.getTitle());
+					System.out.println("Same author? " + author.equals(currentAuthor));
 						if(author.equals(currentAuthor) ) {
+							
 							//se a pub nao estiver nas pubs já aceites do utilizador
 							boolean pubNotIn = true;
 							for(Pub auxPub : user.getPubs()) {
@@ -146,6 +162,7 @@ public class ServerImp extends UnicastRemoteObject implements Interface{
 								
 							}
 							if(pubNotIn){
+								System.out.println("Adding pub to user." + "\n");
 								// se um deles for o autor que atualmente esta em sessao
 								//entao o array auxiliar ao atualizado
 								authorPubs.push(selectedPub);
@@ -159,12 +176,13 @@ public class ServerImp extends UnicastRemoteObject implements Interface{
 		//update da stack do user
 		user.requestPubs.clear();
 		user.requestPubsUpdate(authorPubs);
-		
+		return user;
 		
 	}
 
+	
 	//ver pubs
-	public void printPubs(Client user, boolean order) {
+	public Client printPubs(Client user, boolean order) throws RemoteException {
 		pubsOrder.clear();
 		int size = user.getPubs().size();
 		
@@ -253,10 +271,10 @@ public class ServerImp extends UnicastRemoteObject implements Interface{
 		
 		//update nas pubs do user
 		user.userPubsUpdate(pubsOrder);
-			
+		return user;
 	}
 
-	public void performance(Client user) {
+	public void performance(Client user) throws RemoteException {
 		performanceVar = 0;
 		
 		for(Pub i : user.getPubs()) {
@@ -266,6 +284,10 @@ public class ServerImp extends UnicastRemoteObject implements Interface{
 		user.citationScore = performanceVar;
 	}
 	
+	public boolean addNewPub(String title, String journal, String[] authors, int[] numbers) throws RemoteException {
+		
+		return RWfile.write_new_pub(title, numbers[0], authors, journal, numbers[2], numbers[1], numbers[4], numbers[3], pubDB);
+	}
 
 }
 		

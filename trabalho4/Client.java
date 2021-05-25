@@ -81,10 +81,16 @@ public class Client implements Serializable {
 	
 	//update da stack de pubs
 	public void userPubsUpdate(Stack<Pub> stack) {
-		this.userPubs = stack;
+		for(Pub i : stack) {
+			this.userPubs.push(i);
+		}
+	
 	}
 	//update da stack de pubs candidatas
 	public void requestPubsUpdate(Stack<Pub> stack) {
+		for(Pub i : stack) {
+			i.print();
+		}
 		this.requestPubs = stack;
 	}
 

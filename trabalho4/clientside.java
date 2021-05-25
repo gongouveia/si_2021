@@ -3,10 +3,10 @@ package si_2021.trabalho4;
 import java.util.*;
 import java.rmi.registry.LocateRegistry; 
 import java.rmi.registry.Registry;
-import java.util.HashMap;
+
 import java.util.Scanner;
 import java.rmi.*;  
-import java.rmi.server.*;  
+
 
 public class clientside {
 	
@@ -16,15 +16,15 @@ public class clientside {
 		//variavel que controla se o cliente se mantem ligado
 		boolean end_connection= false;
 		
-		boolean valid_login = false;
+
 		
 		boolean option_menu1 = true;
 		
 		boolean option_menu2 = false;
 		
-		boolean valid_acc = true;
+
 		
-		String currentUser = "";
+		String user_login = "";
 		
 		
 		Scanner sc = new Scanner(System.in);
@@ -62,7 +62,7 @@ public class clientside {
 						case "1": {
 
 							System.out.println("insert user email");
-							String user_login= sc.nextLine();
+							user_login = sc.nextLine();
 							System.out.println("insert password");
 							String pass_login= sc.nextLine();
 							//procura por todos os clientes da base de dados
@@ -74,6 +74,8 @@ public class clientside {
 								 System.out.println("Invalid Log In\n");
 								 }else {
 									 System.out.println("Valid Log In\n");
+									 
+									 option_menu2 = true;
 								 }
 							break;
 							
@@ -83,6 +85,7 @@ public class clientside {
 							System.out.println("Disconnected \n");
 							end_connection = true;
 							option_menu1 = false;
+							option_menu2 = false;
 							break;
 						}
 						//caso utilziadr queira fazer conta
@@ -133,11 +136,14 @@ public class clientside {
 
 		
 		}	
-					System.out.println("You have loged in.");
-
-					//user = interfaceServer.;
-					//mainMenu(sc, option_menu2, user,  interfaceServer);
-				
+					if(option_menu2) {
+						System.out.println("You have logged in.");
+	
+						user = interfaceServer.whosClient(user_login);
+						System.out.println("Current user: " + user.getName());
+						option_menu1 = mainMenu(sc, option_menu2, user,  interfaceServer);
+					}
+					
 		}
 				
 				
@@ -168,17 +174,17 @@ public class clientside {
 	}
 
 	
-	public static void mainMenu (Scanner sc, boolean optionMenu, Client user, Interface interfaceServer) {
+	public static boolean mainMenu (Scanner sc, boolean optionMenu, Client user, Interface interfaceServer) throws RemoteException {
 		//variavel para receber inputs do utilizador
 		String input;
 		while(optionMenu) {
 			
 			//menu apresnetado
 			System.out.println("\n\nMENU USER:");
-			System.out.println("1-Minhas publicaÃ§Ãµes");
-			System.out.println("2-Introduzir publicaÃ§Ãµes");
-			System.out.println("3-PublicaÃ§Ãµes candidatas");
-			System.out.println("4-Remover publicaÃ§Ãµes");
+			System.out.println("1-Minhas publicações");
+			System.out.println("2-Introduzir publicações");
+			System.out.println("3-Publicações candidatas");
+			System.out.println("4-Remover publicações");
 			System.out.println("5-My Performance");
 			System.out.println("6-Exit\n");
 			
@@ -191,18 +197,20 @@ public class clientside {
 
 			case "1":
 				
-				System.out.println("Listar publicaÃ§Ãµes:\n 1 - Por ano\n 2 - por citaÃ§Ãµes");
+				System.out.println("Listar publicações:\n 1 - Por ano\n 2 - por citações");
 				input = sc.nextLine();
 				
 				switch(input) {
 					case "1":
-						interfaceServer.printPubs(user, true);
+						user = interfaceServer.printPubs(user, true);
 						printPublications(user.getPubs());
+						
 						
 						break;
 					case"2":
-						interfaceServer.printPubs(user, false);
+						user = interfaceServer.printPubs(user, false);
 						printPublications(user.getPubs());
+						
 						break;
 					default:
 						System.out.println("Please select 1 or 2.");
@@ -216,13 +224,49 @@ public class clientside {
 				break;
 	
 			case "2":
+				int[] addNewPubNumbers = new int[5];
+				
+				
+				System.out.println("Add a new publication: ");
+				System.out.println("Title: ");
+				String title = sc.nextLine();
+				System.out.println("Authors \n Example: Albert Einstein / John Mayer/JoeBiden\n");
+				String[] authors = sc.nextLine().split("/");
+				System.out.println("Year:");
+				String year = sc.nextLine();
+				System.out.println("Pages:");
+				String page = sc.nextLine();
+				System.out.println("Journal: ");
+				String journal = sc.nextLine();
+				System.out.println("Volume:");
+				String volume = sc.nextLine();
+				System.out.println("DOI:");
+				String DOi = sc.nextLine();
+				System.out.println("Citations:");
+				String citationsNumb = sc.nextLine();
+				
+				try {
+					addNewPubNumbers[0] = Integer.parseInt(year);
+					addNewPubNumbers[1] = Integer.parseInt(page);
+					addNewPubNumbers[2] = Integer.parseInt(volume);
+					addNewPubNumbers[3] = Integer.parseInt(DOi);
+					addNewPubNumbers[4] = Integer.parseInt(citationsNumb);
+					interfaceServer.addNewPub(title, journal, authors, addNewPubNumbers);
+					
+				} catch (Exception e) {
+					System.out.println("Your input is invalid. Use numbers for year, page, volume, DOi and citationsNumb");
+					System.out.println("");
+				}
+				
 				break;
 	
 	
 			case "3":
 				//pedido ao server de pubs candidatas
 				
-					interfaceServer.requestPubs(user);
+					user = interfaceServer.requestPubs(user);
+					
+					
 					
 					//impressÃ£o de pubs candidatas
 					int counter = 1;
@@ -265,15 +309,16 @@ public class clientside {
 							Stack<Integer> numberInt = new Stack<Integer>();
 							
 							//contador para verificar se todos os numeros sao convertidos
-							counter = 1;
+							counter = 0;
 							
 							//cada texto Ã© convertido num inteiro. 
 							//Ã‰ detetado o erro de inputs q nao pode ser convertidos
 							for( String i : numberString) {
 								//esperamos por erros
+								
 								try {
-									//passagem de texto para int
-									textToNumber = Integer.parseInt(i);
+									//passagem de texto para int, o utilizador comeca por 1 e nao em 0
+									textToNumber = Integer.parseInt(i) - 1;
 									//o numero e inserido numa stack
 									numberInt.push(textToNumber);
 								} catch (Exception e) {
@@ -287,9 +332,11 @@ public class clientside {
 							Stack<Pub> auxPubs = new Stack<Pub>();
 							
 							//se todos os inputs tiverem sido convertidos
+							
 							if(counter == numberInt.size()) {
 								for(int j : numberInt) {
 									//entao os objetos pubs sÃ£o adicionados numa stack auxiliar
+									user.requestPubs().get(j).print();
 									auxPubs.push(user.requestPubs().get(j));
 								}
 								//a stack do utilizador e atualizada
@@ -315,9 +362,11 @@ public class clientside {
 	
 	
 			case "6":
+				optionMenu = false;
 				
-				break;
-	
+				
+				
+				return true;
 			default:
 				System.out.println("Invalid option");
 				break;
@@ -325,18 +374,26 @@ public class clientside {
 			}
 			 
 		}
+		
+		return false;
 
 	}
 	
 	
 	public static void printPublications(Stack<Pub> pub) {
-		int counter = 0;
+		int counter = 1;
 		System.out.println("Publications: ");
-		for(Pub i : pub) {
-			System.out.println("Publication: " + counter);
-			i.print();
-			counter++;
+		
+		if(pub.size() > 0) {
+			for(Pub i : pub) {
+				System.out.println("Publication: " + counter);
+				i.print();
+				counter++;
+			} 
+		} else {
+			System.out.println("No publications to show. Add a few.");
 		}
+		
 	}
 	
 }

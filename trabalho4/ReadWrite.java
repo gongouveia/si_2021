@@ -21,7 +21,7 @@ public class ReadWrite {
 	String file_publication = "publicationDATABASE.txt";
 	String file_client = "clientDATABASE.txt";
 
-	public  void main(String[] args) {
+	public ReadWrite() {
 
 		//String file = "C:\\Users\\MyName\\filename.txt");
 
@@ -31,7 +31,7 @@ public class ReadWrite {
 		verify(file_client);
 
 
-		write_new_client("dadada","dadada","dada","dadad");
+		//write_new_client("dadada","dadada","dada","dadad");
 		
 
 	}
@@ -133,39 +133,50 @@ public class ReadWrite {
 		}
 	}
 
-	public void write_new_pub( String title, int year, String[] authors, String journal,int volume, int page,int nmb_citations,int DOI) {
+	public boolean write_new_pub( String title, int year, String[] authors, String journal,int volume, int page,int nmb_citations,int DOI,HashMap<Integer, Pub> pubDB) {
 		try {
+			
+			
+			
+			//se já existir um DOI a publicação não pode ser adicionada
+			for (int DOIvalues : pubDB.keySet()) {
+				if (DOI==DOIvalues){
+					return false;				
+				}
+			}
+			
+			//se a publicação puder ser adicionada é adicionada ao ficheiro		
 			BufferedWriter bw_pubs = null;
+			//bw_pubs = new BufferedWriter(new FileWriter(this.file_publication, true));
 			bw_pubs = new BufferedWriter(new FileWriter(this.file_publication, true));
-
 			String author_string="";
 			for(String i:authors) {
-				author_string+=i+"*";
+				author_string+=i.trim()+"!";
 			}
 
 			//da append de uma nova pubicação no ficheiro
 			bw_pubs.write(title+"/"+year+"/"+author_string+"/"+journal+"/"+volume+"/"+page+"/"+nmb_citations+"/"+DOI);
 			bw_pubs.newLine();
 			bw_pubs.flush();
-
-
-
 			//fecha streams
+			
 			if ( bw_pubs != null) try {
 
 				bw_pubs.close();
 			} catch (IOException ioe2) {
 				// just ignore it
 			}
-			System.out.println("Successfully wrote to the file.");
-			System.out.println("publicationDB updated");
-
-		} catch (IOException e) {
+			//System.out.println("Successfully wrote to the file.");
+			//System.out.println("publicationDB updated");
+			//System.out.println("Publication already exists");
+			//System.out.println("publicationDB updated");	
+			} catch (IOException e) {
 			System.out.println("An error occurred.");
 			e.printStackTrace();
 		}
+		return true;
 	}
-
+	
 	public  void fileClear(String file) {
 		File myObj = new File(file ); 
 		if (myObj.delete()) { 
@@ -182,8 +193,8 @@ public class ReadWrite {
 	}
 
 
-	public  HashMap<String, Pub> pubDB_updatefromfile(HashMap<String, Pub> pubDB) {
-
+	public  HashMap<Integer, Pub> pubDB_updatefromfile(HashMap<Integer, Pub> pubDB) {
+		
 		try {
 
 			File myObj = new File(this.file_publication);
@@ -191,29 +202,31 @@ public class ReadWrite {
 
 			Scanner myReader = new Scanner(myObj);
 
-
 			while (myReader.hasNextLine()) {
-
+				
 				String data = myReader.nextLine();
 				String[] datastrip = data.split("/");
 
-				String[] authors = datastrip[3].split("");
+				String[] authors = datastrip[2].split("!");
+				
 
+				
+				Pub new_Pub = new Pub(datastrip[0],Integer.parseInt(datastrip[1]),authors,datastrip[3],Integer.parseInt(datastrip[4]),Integer.parseInt(datastrip[5]),Integer.parseInt(datastrip[6]),Integer.parseInt(datastrip[7]));
 
-				Pub pub1 =   new Pub("title1",2,authors,"journal1",1,2,2,2);
-				Pub new_Pub =   new Pub(datastrip[0],Integer.parseInt(datastrip[1]),authors,datastrip[3],Integer.parseInt(datastrip[4]),Integer.parseInt(datastrip[5]),Integer.parseInt(datastrip[6]),Integer.parseInt(datastrip[7]));
-
-
-				pubDB.put(new_Pub.getTitle(), new_Pub);	
-
-
+				
+				pubDB.put(new_Pub.getDOI(), new_Pub);	
+	
 			}
+			
+			
 			myReader.close();
-			System.out.println("clientDB-updated");
+			System.out.println("clientDB hashmap updated from file.");
 		}catch (FileNotFoundException e) {
-			System.out.println("An error occurred.\n");
+			System.out.println("An error occurred updating the clientDB hashmap.\n");
 			e.printStackTrace();
 		}
+		System.out.println("Pubs added to the hashmap.");
+		
 		return pubDB;
 	}
 

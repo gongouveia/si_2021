@@ -24,6 +24,9 @@ public class serverside
 					
 			Registry registry = LocateRegistry.createRegistry(1234); 
 			
+			
+			
+			
 			System.out.println("CHECKPOINT1 new client");
 			
 			ReadWrite RWfile = new ReadWrite();
