@@ -22,4 +22,7 @@ public interface Interface extends Remote{
 	public boolean addNewPub(String title, String journal, String[] authors, int[] numbers) throws RemoteException;
 	
 	public Client removePub(Client user, int DOI) throws RemoteException, IOException;
+	
+	public boolean isThisClientRegistred(String userEmail) throws RemoteException, IOException;
+
 }
