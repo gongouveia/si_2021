@@ -275,32 +275,34 @@ public class ServerImp extends UnicastRemoteObject implements Interface{
 	}
 
 	public Client performance(Client user, int in) throws RemoteException {
+		//inicializa as variaveis de performance a 0
 		for (int k = 0; k < performanceVar.length; k++) {
 			performanceVar[k] = 0;
 		}
-		
 		int pubScore = 0;
+		//iterando por todas as publicações do usuario
 		for(Pub i : user.getPubs()) {
+			//retornando o numero de citações dessa publicação
 			pubScore = i.getCitations();
-			//Total citations
+			//número de citaçoões
 			performanceVar[0] += pubScore;
-			
+			//número de publciações com mais de numero de citações inseridos
 			if(pubScore >= in) {
 				performanceVar[1] += pubScore;
 			}
-			
+			//número de publicações com mais de 9 citações
 			if(pubScore >= 10) {
 				performanceVar[2] += pubScore;
 			}
 		}
-		
-		
+		//actualiza as performances do utilizador
 		user.citationScore = performanceVar;
-		
+		//retorna utilizador
 		return user;
 	}
 	
-	
+	//adicona uma publicação ao fim do ficheiro
+	//depois de ser verificada se ainda não está no ficheiro e se o DOI é unico
 	public boolean addNewPub(String title, String journal, String[] authors, int[] numbers) throws RemoteException {
 		
 		return RWfile.add_pub(title, numbers[0], authors, journal, numbers[2], numbers[1], numbers[4], numbers[3]);
