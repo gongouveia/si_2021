@@ -194,10 +194,10 @@ public class clientside {
 			
 			//menu apresnetado
 			System.out.println("\n\nMENU USER:");
-			System.out.println("1-Minhas publicações");
-			System.out.println("2-Introduzir publicações");
-			System.out.println("3-Publicações candidatas");
-			System.out.println("4-Remover publicações");
+			System.out.println("1-Minhas publica��es");
+			System.out.println("2-Introduzir publica��es");
+			System.out.println("3-Publica��es candidatas");
+			System.out.println("4-Remover publica��es");
 			System.out.println("5-My Performance");
 			System.out.println("6-Exit\n");
 			
@@ -210,7 +210,7 @@ public class clientside {
 
 			case "1":
 				
-				System.out.println("Listar publicações:\n 1 - Por ano\n 2 - por citações");
+				System.out.println("Listar publica��es:\n 1 - Por ano\n 2 - por cita��es");
 				input = sc.nextLine();
 				
 				switch(input) {
@@ -268,11 +268,10 @@ public class clientside {
 					
 					//itera por todos os autore da publicação
 					for (String i: authors) {
-						System.out.println("0"+i.trim()+"0"+" o user logado é:"+user_login) ;
 						
 		
 						//caso um dos autores da publicação seja o cliente logado no momento pode adicionar  apublicação
-					if  (interfaceServer.whosClient(user_login).getName().equals(i.trim())) {
+					if  (user.getName().equals(i.trim())) {
 						//é possivel adicionar uma publicação se:
 						//-> caso o DOI não exista já na base de dados (publicação repetida 
 						
